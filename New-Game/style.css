@@ -1,9 +1,13 @@
- body {
-     height: 140vh;
-     background-image: url('fone.jpg');
-     background-size: cover;
-     background-repeat: no-repeat;
- }
+body {
+    height: 100vh; /* Set the height to cover the entire viewport */
+    width: 100vw; /* Set the width to cover the entire viewport */
+    background-image: url('photos/fone.jpg');
+    background-size: cover;
+    background-size: 1000px 1400px;
+    background-repeat: no-repeat;
+    margin: 0; 
+    overflow: hidden; 
+}
 
  #isCanvasImg {
      position: relative;
@@ -16,7 +20,6 @@
  #canvas {
      position: absolute;
      left: 1078px;
-     /* top: 280px; */
  }
  #Scorediv {
     position: absolute;

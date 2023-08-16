@@ -1,144 +1,92 @@
 const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
-let Score = document.querySelector("#Scorediv")
-let scoreCount = 10
-let scale = 700
-this._imgScore = new Image();
-this._imgScore.src = "score.png";
+const Score = document.querySelector("#Scorediv");
+let scoreCount = 10;
+let scale = 700;
+const _imgScore = new Image();
+_imgScore.src = "photos/score.png";
 
-this._img1 = new Image();
-this._img1.src = "image1.png";
+const _img1 = new Image();
+_img1.src = "photos/image1.png";
 
-this._button = document.querySelector("#myButton")
+const _button = document.querySelector("#myButton");
 
-_button.addEventListener("click", function () {
-    createGame();
-    render();
-});
-
-class Obj1 {
-    constructor(x, y) {
+class GameObj {
+    constructor(x, y, width, height, imgSrc, color) {
         this._x = x;
         this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "orange"
+        this._width = width;
+        this._height = height;
+        this._color = color;
 
         this._img = new Image();
-        this._img.src = "obj-1.png";
+        this._img.src = imgSrc;
+        this._img.onload = () => this.render(context);
     }
-    render() {
+
+    render(context) {
         if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
     }
 }
 
-class Obj2 {
+class Obj1 extends GameObj {
     constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "blue"
-
-        this._img = new Image();
-        this._img.src = "obj-2.png";
-    }
-    render() {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
-    }
-}
-class Obj3 {
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "red"
-
-        this._img = new Image();
-        this._img.src = "obj-3.png";
-    }
-    render() {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
-    }
-}
-class Obj4 {
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "yellow"
-
-        this._img = new Image();
-        this._img.src = "obj-4.png";
-    }
-    render() {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
-    }
-}
-class Obj5 {
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "green"
-
-        this._img = new Image();
-        this._img.src = "obj-5.png";
-    }
-    render() {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
-    }
-}
-class Obj6 {
-    constructor(x, y) {
-        this._x = x;
-        this._y = y;
-        this._width = 100;
-        this._height = 100;
-        this._color = "pink"
-
-        this._img = new Image();
-        this._img.src = "obj-6.png";
-    }
-    render() {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
+        super(x, y, 100, 100, "photos/obj-1.png", "orange");
     }
 }
 
+class Obj2 extends GameObj {
+    constructor(x, y) {
+        super(x, y, 100, 100, "photos/obj-2.png", "blue");
+    }
+}
 
+class Obj3 extends GameObj {
+    constructor(x, y) {
+        super(x, y, 100, 100, "photos/obj-3.png", "red");
+    }
+}
 
+class Obj4 extends GameObj {
+    constructor(x, y) {
+        super(x, y, 100, 100, "photos/obj-4.png", "yellow");
+    }
+}
 
+class Obj5 extends GameObj {
+    constructor(x, y) {
+        super(x, y, 100, 100, "photos/obj-5.png", "green");
+    }
+}
 
-let data = {
+class Obj6 extends GameObj {
+    constructor(x, y) {
+        super(x, y, 100, 100, "photos/obj-6.png", "pink");
+    }
+}
+
+const data = {
     objects: []
 };
-const objectCoords = [];
+
 const numRows = 8;
 const numCols = 6;
 const rectSize = 126;
 
-
-createGame()
+createGame();
 
 function update() {
-    Score.textContent = scoreCount
-    // data.objects = data.objects.filter(obj => obj._color !== null);
-    removeTreeObjhorizon()
-    removeTreeObjVertical()
-
+    Score.textContent = scoreCount;
+    removeTreeObjhorizon();
+    removeTreeObjVertical();
 }
-
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(_imgScore, -140, -100, 1000, 300);
     data.objects.forEach(obj => {
-        if (obj._y === 280) console.log(obj._color)
-        obj.render();
-    })
+        obj.render(context);
+    });
     context.drawImage(_img1, 120, 1210, 500, 300);
     drawRoundedRectR(10, 150, 700, 80, 50);
     drawRoundedRectB(10, 150, scale, 80, 50);
@@ -155,7 +103,7 @@ loop();
 
 let selectedCandy = null;
 
-canvas.addEventListener("click", (event) => {
+canvas.addEventListener("click", event => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
@@ -167,18 +115,16 @@ canvas.addEventListener("click", (event) => {
 });
 
 function onCandyClick(row, col) {
-    // Check if the clicked cell has valid coordinates
     if (row === undefined || col === undefined) {
-        return; // Ignore the click
+        return;
     }
 
     if (selectedCandy === null) {
         selectedCandy = { row, col };
     } else {
-        const selectedObjIndex = (selectedCandy.row * numCols) + selectedCandy.col;
-        const targetObjIndex = (row * numCols) + col;
+        const selectedObjIndex = selectedCandy.row * numCols + selectedCandy.col;
+        const targetObjIndex = row * numCols + col;
 
-        // Check if the target cell has valid coordinates
         if (
             data.objects[selectedObjIndex] === undefined ||
             data.objects[selectedObjIndex]._x === undefined ||
@@ -187,8 +133,8 @@ function onCandyClick(row, col) {
             data.objects[targetObjIndex]._x === undefined ||
             data.objects[targetObjIndex]._y === undefined
         ) {
-            selectedCandy = null; // Clear the selection
-            return; // Ignore the click
+            selectedCandy = null;
+            return;
         }
 
         const rowDiff = Math.abs(row - selectedCandy.row);
@@ -198,17 +144,12 @@ function onCandyClick(row, col) {
             const selectedObj = data.objects[selectedObjIndex];
             const targetObj = data.objects[targetObjIndex];
 
-            // Swap objects
             if (scoreCount > 0) swapObjects(selectedObj, targetObj);
-            // Clear selection
             selectedCandy = null;
-            // Update the canvas
             render();
         } else if (selectedCandy.row === row && selectedCandy.col === col) {
-            // Clicking the same object again clears the selection
             selectedCandy = null;
         } else {
-            // Clicking on a non-adjacent object updates the selection
             selectedCandy = { row, col };
         }
     }
@@ -373,6 +314,11 @@ function drawRoundedRectB(x, y, width, height, radius) {
     context.fillStyle = "blue";
     context.fill();
 }
+
+_button.addEventListener("click", function () {
+    createGame();
+    render();
+});
 
 
 
