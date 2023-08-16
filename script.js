@@ -103,6 +103,7 @@ function render() {
 function loop() {
     setInterval(() => {
         refreshBoard();
+        // checkAndAddNewRow(); 
         update();
         render();
     }, 500);
@@ -376,6 +377,30 @@ function refreshBoard() {
 }
 
 
+function addNewRow() {
+    const newRow = [];
+    for (let col = 0; col < numCols; col++) {
+        const x = col * rectSize;
+        const y = 280;
+
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(x, y);
+        newRow.push(newObj);
+    }
+    
+    data.objects = newRow.concat(data.objects.slice(0, -numCols));
+}
+function checkAndAddNewRow() {
+    const isEmpty = data.objects.slice(0, numCols).some(obj => !obj || obj._color === undefined);
+
+    if (isEmpty) {
+        setTimeout(() => {
+            addNewRow();
+            refreshBoard();
+            render();
+        }, 2000);
+    }
+}
 
 
 _button.addEventListener("click", function () {
