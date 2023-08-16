@@ -25,7 +25,7 @@ class GameObj {
     }
 
     render(context) {
-        if (this._color !== null) context.drawImage(this._img, this._x, this._y, this._width, this._height);
+        if (this._color !== undefined) context.drawImage(this._img, this._x, this._y, this._width, this._height);
     }
 }
 
@@ -84,16 +84,25 @@ function update() {
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(_imgScore, -140, -100, 1000, 300);
-    data.objects.forEach(obj => {
+
+    const validObjects = data.objects.filter(obj => obj && obj._color !== undefined);
+
+    validObjects.forEach(obj => {
+        if (obj._y === 280) {
+            console.log(obj._x + "   " + obj._y);
+        }
         obj.render(context);
     });
+
     context.drawImage(_img1, 120, 1210, 500, 300);
     drawRoundedRectR(10, 150, 700, 80, 50);
     drawRoundedRectB(10, 150, scale, 80, 50);
 }
 
+
 function loop() {
     setInterval(() => {
+        refreshBoard();
         update();
         render();
     }, 500);
@@ -101,7 +110,7 @@ function loop() {
 
 loop();
 
-let selectedCandy = null;
+let selectedCandy = undefined;
 
 canvas.addEventListener("click", event => {
     const rect = canvas.getBoundingClientRect();
@@ -111,20 +120,33 @@ canvas.addEventListener("click", event => {
     const clickedRow = Math.floor((mouseY - 280) / rectSize);
     const clickedCol = Math.floor(mouseX / rectSize);
 
-    onCandyClick(clickedRow, clickedCol);
+    if (clickedRow < numRows && clickedCol < numCols) {
+        if (
+            (clickedRow === 0 && clickedCol === 0) ||
+            (clickedRow === 0 && clickedCol === 5) ||
+            (clickedRow === 3 && clickedCol === 2) ||
+            (clickedRow === 3 && clickedCol === 3) ||
+            (clickedRow === 4 && clickedCol === 2) ||
+            (clickedRow === 4 && clickedCol === 3) ||
+            (clickedRow === 7 && clickedCol === 0) ||
+            (clickedRow === 7 && clickedCol === 5)
+        ) {
+
+        }
+        else onCandyClick(clickedRow, clickedCol);
+    }
 });
 
 function onCandyClick(row, col) {
     if (row === undefined || col === undefined) {
         return;
     }
-
-    if (selectedCandy === null) {
+    // console.log(row, col)
+    if (selectedCandy === undefined) {
         selectedCandy = { row, col };
     } else {
         const selectedObjIndex = selectedCandy.row * numCols + selectedCandy.col;
         const targetObjIndex = row * numCols + col;
-
         if (
             data.objects[selectedObjIndex] === undefined ||
             data.objects[selectedObjIndex]._x === undefined ||
@@ -133,7 +155,7 @@ function onCandyClick(row, col) {
             data.objects[targetObjIndex]._x === undefined ||
             data.objects[targetObjIndex]._y === undefined
         ) {
-            selectedCandy = null;
+            selectedCandy = undefined;
             return;
         }
 
@@ -144,17 +166,21 @@ function onCandyClick(row, col) {
             const selectedObj = data.objects[selectedObjIndex];
             const targetObj = data.objects[targetObjIndex];
 
+            console.log("selected" + selectedObjIndex + "     " + "target" + targetObjIndex)
+
+            console.log("selected  " + selectedObj._color + "     " + "target  " + targetObj._color)
+
+
             if (scoreCount > 0) swapObjects(selectedObj, targetObj);
-            selectedCandy = null;
+            selectedCandy = undefined;
             render();
         } else if (selectedCandy.row === row && selectedCandy.col === col) {
-            selectedCandy = null;
+            selectedCandy = undefined;
         } else {
             selectedCandy = { row, col };
         }
     }
 }
-
 
 
 
@@ -200,14 +226,15 @@ function removeTreeObjhorizon() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
+            if (obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
-            const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
 
-            if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                obj1._color = null;
-                obj2._color = null;
-                obj3._color = null;
-
+                }
             }
         }
     }
@@ -223,13 +250,14 @@ function removeTreeObjVertical() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
+            if (obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
-            const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
-
-            if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                obj1._color = null;
-                obj2._color = null;
-                obj3._color = null;
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
+                }
             }
         }
     }
@@ -267,19 +295,27 @@ function createGame() {
             }
 
             if (shouldExclude) {
-                objectCoords.push({ color: null, x: 3000, y: 3000 });
+                objectCoords.push({ color: undefined });
             } else {
                 objectCoords.push({ x, y });
             }
         }
     }
 
+    let prevObj = null; // Store the previous object
     for (const { x, y } of objectCoords) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(x, y);
-        data.objects.push(newObj);
+        if (prevObj && newObj._color === undefined) {
+            // Replace undefined color objects with the previous object
+            data.objects.push(prevObj);
+        } else {
+            data.objects.push(newObj);
+            prevObj = newObj; // Update the previous object
+        }
     }
 }
+
 
 
 
@@ -314,6 +350,33 @@ function drawRoundedRectB(x, y, width, height, radius) {
     context.fillStyle = "blue";
     context.fill();
 }
+function refreshBoard() {
+    for (let row = numRows - 1; row > 0; row--) {
+        for (let col = 0; col < numCols; col++) {
+            const currentIndex = row * numCols + col;
+            const currentObj = data.objects[currentIndex];
+
+            const currentCoords = `${col}-${row}`;
+            const excludedCoords = ['2-3', '3-3', '2-4', '3-4', '2-5', '3-5', '2-6', '3-6'];
+
+            if (!currentObj || currentObj._color === undefined) {
+                const previousIndex = (row - 1) * numCols + col;
+                const previousObj = data.objects[previousIndex];
+
+                if (previousObj && previousObj._color !== undefined && !excludedCoords.includes(currentCoords)) {
+                    // Swap properties and position
+                    data.objects[currentIndex] = previousObj;
+                    previousObj._y = currentObj._y;
+                    data.objects[previousIndex] = currentObj;
+                    currentObj._y = previousObj._y - rectSize;
+                }
+            }
+        }
+    }
+}
+
+
+
 
 _button.addEventListener("click", function () {
     createGame();
