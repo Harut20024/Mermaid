@@ -1,38 +1,37 @@
-body {
-    height: 140vh;
-    background-image: url('photos/fone.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
+#canvas1 {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
- #isCanvasImg {
-     position: relative;
-     left: 1060px;
-     top: 264px;
- }
-
-
-
- #canvas {
-     position: absolute;
-     left: 1078px;
- }
+#canvas {
+    position: absolute;
+    left: 1038px; 
+    top: -25px;
+}
  #Scorediv {
     position: absolute;
-    left: 1425px;
-    top: 58px;
+    left: 1378px;
+    top: 28px;
     font-weight: bold;
     color: rgb(207, 186, 186);
     font-size: 50px;
     font-family: "Arial", sans-serif; /* Adjust the font family name */
-    width: 10px;
-    height: 60px;
+}
+#Coindiv{
+    position: absolute;
+    left: 1520px;
+    top: 20px;
+    font-weight: bold;
+    color: rgb(207, 186, 186);
+    font-size: 30px;
+    font-family: "Arial", sans-serif; /* Adjust the font family name */
 }
 
 #myButton{
     position: absolute; 
-    top: 1250px; 
-    left: 1390px;
+    top: 1220px; 
+    left: 1350px;
     border-radius: 70%;
 
 }

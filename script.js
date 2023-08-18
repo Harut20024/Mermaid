@@ -1,18 +1,43 @@
 const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
+
+const canvas1 = document.querySelector("#canvas1");
+const context1 = canvas1.getContext("2d");
+
 const Score = document.querySelector("#Scorediv");
+
+const Coin = document.querySelector("#Coindiv");
+let coin = 1;
+
+const images = [];
+
+for (let i = 19; i <= 39; i++) {
+    const img = new Image();
+    img.src = `photos/scale/detalner-${i}.png`;
+    images.push(img);
+}
+
 let scoreCount = 50;
-let scale = 30;
-let bublePosY = -700, bubleSpeed = 3, bublePosX = 0
+let scale = 0;
+let bublePosY = 40, bubleSpeed = 3, bublePosX = 0
 
 const bublefoto = new Image();
 bublefoto.src = "photos/bubble.png";
+
+const coinImg = new Image();
+coinImg.src = "photos/coin.png";
 
 const _imgScore = new Image();
 _imgScore.src = "photos/score.png";
 
 const _img1 = new Image();
 _img1.src = "photos/image1.png";
+
+const backImg = new Image();
+backImg.src = "photos/fone.jpg";
+
+const cubeImg = new Image();
+cubeImg.src = "photos/back.png";
 
 const _button = document.querySelector("#myButton");
 
@@ -30,7 +55,7 @@ class GameObj {
     }
 
     render(context) {
-        if (this._color !== undefined) context.drawImage(this._img, this._x, this._y, this._width, this._height);
+        if (this._color !== undefined) context.drawImage(this._img, this._x + 10, this._y + 7, this._width, this._height);
     }
 }
 
@@ -76,29 +101,36 @@ const data = {
 
 const numRows = 8;
 const numCols = 6;
-const rectSize = 126;
+const rectSize = 120;
 
 createGame();
 
 
 function update() {
     score()
+    Coins()
     if (removeFiveObj()) { }
     else if (removeFourObj()) { }
     else removeTreeObj();
 
     bublePosY += bubleSpeed;
-    console.log(bublePosY)
-    if (bublePosY >= -490) {
-        bublePosY = -700;
-        bublePosX += 100
-        if (bublePosX === 400) bublePosX = 0
+    if (bublePosY >= 500) {
+        bublePosY = 40;
+        bublePosX += 4
+        if (bublePosX === 8) bublePosX = 0
     }
 }
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(bublefoto, bublePosX, bublePosY, canvas.width, canvas.height - 140);
+
+    context1.drawImage(backImg, 0, 0, canvas1.width, canvas1.height);
+
+    context.drawImage(bublefoto, bublePosX, bublePosY, 600, 600);
+
+    createIce()
+
+    scaleCount(scale)
 
     context.drawImage(_imgScore, -140, -100, 1000, 300);
 
@@ -108,8 +140,8 @@ function render() {
 
     context.drawImage(_img1, 120, 1210, 500, 300);
 
-    drawRoundedRectR(10, 180, 700, 40, 20);
-    drawRoundedRectB(10, 180, scale, 40, 20);
+    context.drawImage(coinImg, 400, 30, 220, 60);
+
 
 }
 
@@ -117,12 +149,12 @@ function render() {
 function loop() {
     setInterval(() => {
         refreshBoard();
-    }, 600); 
+    }, 200);
 
     setInterval(() => {
         update();
         render();
-    }, 60); 
+    }, 60);
 }
 
 loop();
@@ -208,7 +240,12 @@ function onCandyClick(row, col) {
 //////////functions
 
 function swapObjects(obj1, obj2) {
+    this.swapaudio = document.createElement("audio");
+    this.swapaudio.src = "sounds/move.m4a";
+    this.swapaudio.playbackRate = 1.4;
     // Swap x and y coordinates
+    this.swapaudio.currentTime = 0;
+    this.swapaudio.play();
     const tempX = obj1._x;
     const tempY = obj1._y;
     obj1._x = obj2._x;
@@ -234,23 +271,29 @@ function getRandomObjectClass() {
 function removeFiveObj() {
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 4; col++) {
+            
             const index1 = row * numCols + col;
             const index2 = index1 + 1;
             const index3 = index1 + 2;
             const index4 = index1 + 3;
             const index5 = index1 + 4;
-
+            
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
             const obj4 = data.objects[index4];
             const obj5 = data.objects[index5];
-
+            
             if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
-
+                
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
-                    scale += 150;
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/five.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 3;
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -268,23 +311,29 @@ function removeFiveObj() {
 
     for (let col = 0; col < numCols; col++) {
         for (let row = 0; row < numRows - 4; row++) {
+            
             const index1 = row * numCols + col;
             const index2 = index1 + numCols;
             const index3 = index2 + numCols;
             const index4 = index3 + numCols;
             const index5 = index4 + numCols;
-
+            
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
             const obj4 = data.objects[index4];
             const obj5 = data.objects[index5];
-
+            
             if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
-
+                
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
-                    scale += 150;
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/five.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 3;
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -319,7 +368,12 @@ function removeFourObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
-                    scale += 100;
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/four.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 2;
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -349,7 +403,12 @@ function removeFourObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
-                    scale += 100;
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/four.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 2;
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -379,7 +438,12 @@ function removeTreeObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    scale += 50
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/tree.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 1
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -406,7 +470,12 @@ function removeTreeObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    scale += 50
+                    this.swapaudio = document.createElement("audio");
+                    this.swapaudio.src = "sounds/tree.m4a";
+                    this.swapaudio.playbackRate = 1.4;
+                    this.swapaudio.currentTime = 0;
+                    this.swapaudio.play();
+                    scale += 1
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
@@ -426,6 +495,7 @@ function shouldExclude(index) {
     // it check is there same index with is in excludedIndices and it will return true if index and one of excludedIndices values are same
     return excludedIndices.includes(index);
 }
+
 function createGame() {
     data.objects = [];
     const objectCoords = [];
@@ -440,13 +510,13 @@ function createGame() {
             // Check if the current coordinates match any exclusion coordinates
             if (
                 (x === 0 && y === 280) ||
-                (x === 630 && y === 280) ||
-                (x === 252 && y === 658) ||
-                (x === 378 && y === 658) ||
-                (x === 252 && y === 784) ||
-                (x === 378 && y === 784) ||
-                (x === 0 && y === 1162) ||
-                (x === 630 && y === 1162)
+                (x === 600 && y === 280) ||
+                (x === 240 && y === 640) ||
+                (x === 360 && y === 640) ||
+                (x === 240 && y === 760) ||
+                (x === 360 && y === 760) ||
+                (x === 0 && y === 1120) ||
+                (x === 600 && y === 1120)
             ) {
                 shouldExclude = true;
             }
@@ -459,7 +529,7 @@ function createGame() {
         }
     }
 
-    let prevObj = null; // Store the previous object
+    let prevObj = undefined; // Store the previous object
     for (const { x, y } of objectCoords) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(x, y);
@@ -473,40 +543,40 @@ function createGame() {
     }
 }
 
+function createIce() {
+    let cubSize = 120
+    for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols; col++) {
+            const x = col * cubSize;
+            const y = row * cubSize + 280;
 
+            let shouldExclude = false;
 
+            // Check if the current coordinates match any exclusion coordinates
+            if (
+                (x === 0 && y === 280) ||
+                (x === 600 && y === 280) ||
+                (x === 240 && y === 640) ||
+                (x === 360 && y === 640) ||
+                (x === 240 && y === 760) ||
+                (x === 360 && y === 760) ||
+                (x === 0 && y === 1120) ||
+                (x === 600 && y === 1120)
+            ) {
+                shouldExclude = true;
+            }
 
+            if (shouldExclude) {
 
-function drawRoundedRectR(x, y, width, height, radius) {
-    context.beginPath();
-    context.moveTo(x + radius, y);
-    context.lineTo(x + width - radius, y);
-    context.arcTo(x + width, y, x + width, y + radius, radius);
-    context.lineTo(x + width, y + height - radius);
-    context.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-    context.lineTo(x + radius, y + height);
-    context.arcTo(x, y + height, x, y + height - radius, radius);
-    context.lineTo(x, y + radius);
-    context.arcTo(x, y, x + radius, y, radius);
-    context.closePath();
-    context.fillStyle = "red";
-    context.fill();
+            } else {
+                context.drawImage(cubeImg, x, y, 130, 120);
+
+            }
+        }
+    }
+
 }
-function drawRoundedRectB(x, y, width, height, radius) {
-    context.beginPath();
-    context.moveTo(x + radius, y);
-    context.lineTo(x + width - radius, y);
-    context.arcTo(x + width, y, x + width, y + radius, radius);
-    context.lineTo(x + width, y + height - radius);
-    context.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-    context.lineTo(x + radius, y + height);
-    context.arcTo(x, y + height, x, y + height - radius, radius);
-    context.lineTo(x, y + radius);
-    context.arcTo(x, y, x + radius, y, radius);
-    context.closePath();
-    context.fillStyle = "blue";
-    context.fill();
-}
+
 function refreshBoard() {
     for (let row = numRows - 1; row > 0; row--) {
         for (let col = 0; col < numCols; col++) {
@@ -532,6 +602,10 @@ function refreshBoard() {
     }
 }
 
+function scaleCount(i) {
+    context.drawImage(images[i], 40, 150, 700, 95);
+
+}
 
 function addNewRow() {
     const newRow = [];
@@ -561,19 +635,30 @@ function checkAndAddNewRow() {
 let hasWon = false;
 
 function score() {
-    if (!hasWon && scale >= 700) {
+    if (!hasWon && scale === images.length) {
         hasWon = true;
         alert("You win!");
         location.reload();
     }
     Score.textContent = scoreCount;
 }
-
+function Coins() {
+    Coin.textContent = "1/" + coin
+}
 
 
 _button.addEventListener("click", function () {
-    createGame();
-    render();
+    if (coin > 0) {
+        this.swapaudio = document.createElement("audio");
+        this.swapaudio.src = "sounds/change.m4a";
+        this.swapaudio.playbackRate = 1.4;
+        this.swapaudio.currentTime = 0;
+        this.swapaudio.play();
+        createGame();
+        render();
+        coin--
+    }
+
 });
 
 
