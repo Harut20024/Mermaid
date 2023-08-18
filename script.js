@@ -1,8 +1,13 @@
 const canvas = document.querySelector("#canvas");
 const context = canvas.getContext("2d");
 const Score = document.querySelector("#Scorediv");
-let scoreCount = 10;
-let scale = 700;
+let scoreCount = 50;
+let scale = 30;
+let bublePosY = -700, bubleSpeed = 3, bublePosX = 0
+
+const bublefoto = new Image();
+bublefoto.src = "photos/bubble.png";
+
 const _imgScore = new Image();
 _imgScore.src = "photos/score.png";
 
@@ -75,36 +80,49 @@ const rectSize = 126;
 
 createGame();
 
+
 function update() {
-    Score.textContent = scoreCount;
-    removeTreeObjhorizon();
-    removeTreeObjVertical();
+    score()
+    if (removeFiveObj()) { }
+    else if (removeFourObj()) { }
+    else removeTreeObj();
+
+    bublePosY += bubleSpeed;
+    console.log(bublePosY)
+    if (bublePosY >= -490) {
+        bublePosY = -700;
+        bublePosX += 100
+        if (bublePosX === 400) bublePosX = 0
+    }
 }
 
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(bublefoto, bublePosX, bublePosY, canvas.width, canvas.height - 140);
+
     context.drawImage(_imgScore, -140, -100, 1000, 300);
 
     const validObjects = data.objects.filter(obj => obj && obj._color !== undefined);
 
-    validObjects.forEach(obj => {
- 
-        obj.render(context);
-    });
+    validObjects.forEach(obj => obj.render(context));
 
     context.drawImage(_img1, 120, 1210, 500, 300);
-    drawRoundedRectR(10, 150, 700, 80, 50);
-    drawRoundedRectB(10, 150, scale, 80, 50);
+
+    drawRoundedRectR(10, 180, 700, 40, 20);
+    drawRoundedRectB(10, 180, scale, 40, 20);
+
 }
 
 
 function loop() {
     setInterval(() => {
         refreshBoard();
-        // checkAndAddNewRow(); 
+    }, 600); 
+
+    setInterval(() => {
         update();
         render();
-    }, 500);
+    }, 60); 
 }
 
 loop();
@@ -213,9 +231,141 @@ function getRandomObjectClass() {
     return objectClasses[randomIndex];
 }
 
+function removeFiveObj() {
+    for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols - 4; col++) {
+            const index1 = row * numCols + col;
+            const index2 = index1 + 1;
+            const index3 = index1 + 2;
+            const index4 = index1 + 3;
+            const index5 = index1 + 4;
 
-function removeTreeObjhorizon() {
-    
+            const obj1 = data.objects[index1];
+            const obj2 = data.objects[index2];
+            const obj3 = data.objects[index3];
+            const obj4 = data.objects[index4];
+            const obj5 = data.objects[index5];
+
+            if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
+
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
+                    scale += 150;
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
+                    obj4._color = undefined;
+                    obj5._color = undefined;
+                    obj1._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
+                    obj4._allowed = false;
+                    obj5._allowed = false;
+                }
+            }
+        }
+    }
+
+    for (let col = 0; col < numCols; col++) {
+        for (let row = 0; row < numRows - 4; row++) {
+            const index1 = row * numCols + col;
+            const index2 = index1 + numCols;
+            const index3 = index2 + numCols;
+            const index4 = index3 + numCols;
+            const index5 = index4 + numCols;
+
+            const obj1 = data.objects[index1];
+            const obj2 = data.objects[index2];
+            const obj3 = data.objects[index3];
+            const obj4 = data.objects[index4];
+            const obj5 = data.objects[index5];
+
+            if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
+
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
+                    scale += 150;
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
+                    obj4._color = undefined;
+                    obj5._color = undefined;
+                    obj1._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
+                    obj4._allowed = false;
+                    obj5._allowed = false;
+                }
+            }
+        }
+    }
+}
+
+
+function removeFourObj() {
+    for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols - 3; col++) {
+            const index1 = row * numCols + col;
+            const index2 = index1 + 1;
+            const index3 = index1 + 2;
+            const index4 = index1 + 3;
+
+            const obj1 = data.objects[index1];
+            const obj2 = data.objects[index2];
+            const obj3 = data.objects[index3];
+            const obj4 = data.objects[index4];
+
+            if ((obj1 && obj2 && obj3 && obj4) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false)) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
+
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
+                    scale += 100;
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
+                    obj4._color = undefined;
+                    obj1._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
+                    obj4._allowed = false;
+                }
+            }
+        }
+    }
+
+    for (let col = 0; col < numCols; col++) {
+        for (let row = 0; row < numRows - 3; row++) {
+            const index1 = row * numCols + col;
+            const index2 = index1 + numCols;
+            const index3 = index2 + numCols;
+            const index4 = index3 + numCols;
+
+            const obj1 = data.objects[index1];
+            const obj2 = data.objects[index2];
+            const obj3 = data.objects[index3];
+            const obj4 = data.objects[index4];
+
+            if ((obj1 && obj2 && obj3 && obj4) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false)) {
+                const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
+
+                if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
+                    scale += 100;
+                    obj1._color = undefined;
+                    obj2._color = undefined;
+                    obj3._color = undefined;
+                    obj4._color = undefined;
+                    obj1._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
+                    obj4._allowed = false;
+                }
+            }
+        }
+    }
+}
+
+function removeTreeObj() {
+
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 2; col++) {
             const index1 = row * numCols + col;
@@ -225,26 +375,24 @@ function removeTreeObjhorizon() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
-            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined)&&(obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
+            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    console.log(obj1+ " "+ obj2+ " "+obj3)
-                    scale-=20
+                    scale += 50
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
                     obj1._allowed = false;
-                     obj2._allowed = false;
-                     obj3._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
 
                 }
             }
         }
     }
-}
 
-function removeTreeObjVertical() {
+
     for (let col = 0; col < numCols; col++) {
         for (let row = 0; row < numRows - 2; row++) {
             const index1 = row * numCols + col;
@@ -254,23 +402,23 @@ function removeTreeObjVertical() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
-            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined)&&(obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
+            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    console.log(obj1+ " "+ obj2+ " "+obj3)
-                    scale-=20
+                    scale += 50
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
                     obj1._allowed = false;
-                     obj2._allowed = false;
-                     obj3._allowed = false;
+                    obj2._allowed = false;
+                    obj3._allowed = false;
                 }
             }
         }
     }
 }
+
 
 
 function shouldExclude(index) {
@@ -395,7 +543,7 @@ function addNewRow() {
         const newObj = new ObjectClass(x, y);
         newRow.push(newObj);
     }
-    
+
     data.objects = newRow.concat(data.objects.slice(0, -numCols));
 }
 function checkAndAddNewRow() {
@@ -409,6 +557,18 @@ function checkAndAddNewRow() {
         }, 2000);
     }
 }
+
+let hasWon = false;
+
+function score() {
+    if (!hasWon && scale >= 700) {
+        hasWon = true;
+        alert("You win!");
+        location.reload();
+    }
+    Score.textContent = scoreCount;
+}
+
 
 
 _button.addEventListener("click", function () {
