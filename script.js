@@ -18,7 +18,7 @@ class GameObj {
         this._width = width;
         this._height = height;
         this._color = color;
-
+        this._allowed = true
         this._img = new Image();
         this._img.src = imgSrc;
         this._img.onload = () => this.render(context);
@@ -88,9 +88,7 @@ function render() {
     const validObjects = data.objects.filter(obj => obj && obj._color !== undefined);
 
     validObjects.forEach(obj => {
-        if (obj._y === 280) {
-            console.log(obj._x + "   " + obj._y);
-        }
+ 
         obj.render(context);
     });
 
@@ -217,7 +215,7 @@ function getRandomObjectClass() {
 
 
 function removeTreeObjhorizon() {
-    scale -= 5
+    
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 2; col++) {
             const index1 = row * numCols + col;
@@ -227,13 +225,18 @@ function removeTreeObjhorizon() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
-            if (obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) {
+            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined)&&(obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
+                    console.log(obj1+ " "+ obj2+ " "+obj3)
+                    scale-=20
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
+                    obj1._allowed = false;
+                     obj2._allowed = false;
+                     obj3._allowed = false;
 
                 }
             }
@@ -251,13 +254,18 @@ function removeTreeObjVertical() {
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
-            if (obj1 !== undefined && obj2 !== undefined && obj3 !== undefined) {
+            if ((obj1 !== undefined && obj2 !== undefined && obj3 !== undefined)&&(obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
+                    console.log(obj1+ " "+ obj2+ " "+obj3)
+                    scale-=20
                     obj1._color = undefined;
                     obj2._color = undefined;
                     obj3._color = undefined;
+                    obj1._allowed = false;
+                     obj2._allowed = false;
+                     obj3._allowed = false;
                 }
             }
         }
@@ -358,7 +366,7 @@ function refreshBoard() {
             const currentObj = data.objects[currentIndex];
 
             const currentCoords = `${col}-${row}`;
-            const excludedCoords = ['2-3', '3-3', '2-4', '3-4', '2-5', '3-5', '2-6', '3-6'];
+            const excludedCoords = ['0-1', '5-1', '2-3', '3-3', '2-4', '3-4', '2-5', '3-5'];
 
             if (!currentObj || currentObj._color === undefined) {
                 const previousIndex = (row - 1) * numCols + col;
