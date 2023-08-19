@@ -1,3 +1,11 @@
+body {
+    width: 1000px; /* Set the width to 1000 pixels */
+    max-height: 592px; /* Set a maximum height of 592 pixels (Google Pixel 4's height) */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-y: scroll; /* Allow vertical scrolling */
+}
+
+
 #canvas1 {
     position: absolute;
     top: 0;
@@ -27,14 +35,33 @@
     font-size: 30px;
     font-family: "Arial", sans-serif; /* Adjust the font family name */
 }
-
+#Timediv{
+    position: absolute;
+    left: 1240px;
+    top: 20px;
+    font-weight: bold;
+    color: rgb(207, 186, 186);
+    font-size: 30px;
+    font-family: "Arial", sans-serif; /* Adjust the font family name */
+}
 #myButton {
     position: absolute; 
-    top: 1175px; 
+    top: 1195px; 
     left: 1350px;
     border-radius: 70%;
 }
-
+#myButtonBomb {
+    position: absolute; 
+    top: 1195px; 
+    left: 1490px;
+    border-radius: 70%;
+}
+#myButtonDel {
+    position: absolute; 
+    top: 1195px; 
+    left: 1210px;
+    border-radius: 70%;
+}
 #myButton.clicked #imagebutton {
     transform: rotate(90deg); 
     transition: transform 1s ease; 

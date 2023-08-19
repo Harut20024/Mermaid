@@ -5,24 +5,35 @@ const canvas1 = document.querySelector("#canvas1");
 const context1 = canvas1.getContext("2d");
 
 const Score = document.querySelector("#Scorediv");
+let scoreCount = 50;
+let scale = 0;
+
+let bublePosY = 40, bubleSpeed = 3, bublePosX = 0
 
 const Coin = document.querySelector("#Coindiv");
-let coin = 2;
+let coin = 10;
+
+const Time = document.querySelector("#Timediv");
+let Timeout = 60;
+
+setInterval(() => {
+    Timeout--
+}, 1000);
 
 const images = [];
 
-for (let i = 19; i <= 39; i++) {
+for (let i = 19; i < 39; i++) {
     const img = new Image();
     img.src = `photos/scale/detalner-${i}.png`;
     images.push(img);
 }
 
-let scoreCount = 50;
-let scale = 0;
-let bublePosY = 40, bubleSpeed = 3, bublePosX = 0
 
 const bublefoto = new Image();
 bublefoto.src = "photos/bubble.png";
+
+const timeImg = new Image();
+timeImg.src = "photos/time.png";
 
 const coinImg = new Image();
 coinImg.src = "photos/coin.png";
@@ -39,7 +50,7 @@ backImg.src = "photos/fone.jpg";
 const cubeImg = new Image();
 cubeImg.src = "photos/back.png";
 
-const _button = document.querySelector("#myButton");
+
 
 class GameObj {
     constructor(x, y, width, height, imgSrc, color) {
@@ -137,9 +148,12 @@ function render() {
 
     validObjects.forEach(obj => obj.render(context));
 
-    context.drawImage(_img1, 120, 1160, 500, 300);
+    context.drawImage(_img1, 120, 1180, 500, 300);
 
     context.drawImage(coinImg, 400, 30, 220, 60);
+
+    context.drawImage(timeImg, 100, 30, 220, 60);
+
 
 
 }
@@ -148,13 +162,13 @@ function render() {
 function loop() {
     setInterval(() => {
         refreshBoard();
-    }, 200);
+    }, 400);
 
     setInterval(() => {
         checkAndAddNewRow()
         update();
         render();
-    }, 60);
+    }, 100);
 }
 
 loop();
@@ -170,19 +184,69 @@ canvas.addEventListener("click", event => {
     const clickedCol = Math.floor(mouseX / rectSize);
 
     if (clickedRow < numRows && clickedCol < numCols) {
-        if (
-            (clickedRow === 0 && clickedCol === 0) ||
-            (clickedRow === 0 && clickedCol === 5) ||
-            (clickedRow === 3 && clickedCol === 2) ||
-            (clickedRow === 3 && clickedCol === 3) ||
-            (clickedRow === 4 && clickedCol === 2) ||
-            (clickedRow === 4 && clickedCol === 3) ||
-            (clickedRow === 7 && clickedCol === 0) ||
-            (clickedRow === 7 && clickedCol === 5)
-        ) {
+        const wrapAudio = document.createElement("audio");
+        wrapAudio.src = "sounds/Weapp.ogg";
+        if (deleteMode && coin >= 2) {
+            const clickedIndex = clickedRow * numCols + clickedCol;
+            const clickedObj = data.objects[clickedIndex];
 
+            if (clickedObj) {
+                wrapAudio.playbackRate = 1.4;
+                wrapAudio.currentTime = 0;
+                wrapAudio.play();
+                clickedObj._color = undefined;
+                clickedObj._allowed = false;
+                deleteMode = false
+                coin -= 2
+                render();
+            }
         }
-        else onCandyClick(clickedRow, clickedCol);
+        else if (deleteBomb && coin >= 4) {
+            const bombAudio = document.createElement("audio");
+            bombAudio.src = "sounds/Bomb.ogg";
+
+            const clickedIndex = clickedRow * numCols + clickedCol;
+            const clickedObj1 = data.objects[clickedIndex - 1];
+            const clickedObj2 = data.objects[clickedIndex];
+            const clickedObj3 = data.objects[clickedIndex + 1];
+            const clickedObj4 = data.objects[clickedIndex + 6];
+            const clickedObj5 = data.objects[clickedIndex - 6];
+            if (clickedObj2) {
+                scale += 2;
+                bombAudio.playbackRate = 1.4;
+                bombAudio.currentTime = 0;
+                bombAudio.play();
+                clickedObj2._color = undefined;
+                clickedObj2._allowed = false;
+                clickedObj1._color = undefined;
+                clickedObj1._allowed = false;
+                clickedObj3._color = undefined;
+                clickedObj3._allowed = false;
+                clickedObj4._color = undefined;
+                clickedObj4._allowed = false;
+                clickedObj5._color = undefined;
+                clickedObj5._allowed = false;
+                deleteBomb = false
+                coin -= 4
+                render();
+            }
+        } else {
+            if (
+                (clickedRow === 0 && clickedCol === 0) ||
+                (clickedRow === 0 && clickedCol === 5) ||
+                (clickedRow === 3 && clickedCol === 2) ||
+                (clickedRow === 3 && clickedCol === 3) ||
+                (clickedRow === 4 && clickedCol === 2) ||
+                (clickedRow === 4 && clickedCol === 3) ||
+                (clickedRow === 7 && clickedCol === 0) ||
+                (clickedRow === 7 && clickedCol === 5)
+            ) {
+                //dont do anythink
+            } else {
+
+                onCandyClick(clickedRow, clickedCol);
+            }
+        }
     }
 });
 
@@ -270,6 +334,8 @@ function getRandomObjectClass() {
 }
 
 function removeFiveObj() {
+    this.swapaudio = document.createElement("audio");
+    this.swapaudio.src = "sounds/five.m4a";
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 4; col++) {
 
@@ -289,8 +355,6 @@ function removeFiveObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/five.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -329,8 +393,6 @@ function removeFiveObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/five.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -353,6 +415,8 @@ function removeFiveObj() {
 
 
 function removeFourObj() {
+    this.swapaudio = document.createElement("audio");
+    this.swapaudio.src = "sounds/four.m4a";
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 3; col++) {
             const index1 = row * numCols + col;
@@ -369,8 +433,6 @@ function removeFourObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/four.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -404,8 +466,6 @@ function removeFourObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/four.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -425,7 +485,8 @@ function removeFourObj() {
 }
 
 function removeTreeObj() {
-
+    this.swapaudio = document.createElement("audio");
+    this.swapaudio.src = "sounds/tree.m4a";
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 2; col++) {
             const index1 = row * numCols + col;
@@ -439,8 +500,6 @@ function removeTreeObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/tree.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -471,8 +530,6 @@ function removeTreeObj() {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor;
 
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3)) {
-                    this.swapaudio = document.createElement("audio");
-                    this.swapaudio.src = "sounds/tree.m4a";
                     this.swapaudio.playbackRate = 1.4;
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
@@ -680,20 +737,52 @@ function checkAndAddNewRow() {
 let hasWon = false;
 
 function scoreAndCoin() {
+    const WinAudio = document.createElement("audio");
+    WinAudio.src = "sounds/win.ogg";
+    const LooseAudio = document.createElement("audio");
+    LooseAudio.src = "sounds/fail.ogg";
     if (!hasWon && scale >= images.length - 1) {
+        WinAudio.play();
         hasWon = true;
         alert("You win!");
         location.reload();
     }
+    if (!hasWon && Timeout <= 0) {
+        LooseAudio.play();
+        hasWon = true;
+        alert("You Loose!");
+        location.reload();
+    }
     Score.textContent = scoreCount;
-    Coin.textContent = "2/" + coin
+    Time.textContent = Timeout
+    Coin.textContent = "10 / " + coin
+    if (Timeout <= 10) {
+        timeout.play();
+    }
 }
 
+let timeout = document.createElement("audio");
+timeout.src = "sounds/time.ogg";
 
-const myButton = document.getElementById('myButton');
+
+
+const myButton = document.querySelector("#myButton");
+const myButtonDel = document.querySelector("#myButtonDel");
+const myButtonBomb = document.querySelector("#myButtonBomb");
+
+let deleteMode = false;
+myButtonDel.addEventListener('click', () => {
+    deleteMode = !deleteMode;
+});
+
+let deleteBomb = false;
+myButtonBomb.addEventListener('click', () => {
+    deleteBomb = !deleteBomb;
+});
+
 
 myButton.addEventListener('click', () => {
-    if (coin > 0) {
+    if (coin >= 1) {
         myButton.classList.add('clicked');
 
         const swapaudio = document.createElement("audio");
@@ -707,9 +796,10 @@ myButton.addEventListener('click', () => {
             createGame();
             render();
             coin--;
-        }, 1000); 
+        }, 1000);
     }
 });
+
 
 
 
