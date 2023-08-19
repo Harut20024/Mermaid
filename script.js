@@ -17,7 +17,7 @@ const Time = document.querySelector("#Timediv");
 let Timeout = 60;
 
 setInterval(() => {
-    Timeout--
+    if (Timeout > 0) Timeout--
 }, 1000);
 
 const images = [];
@@ -745,18 +745,23 @@ function scoreAndCoin() {
         WinAudio.play();
         hasWon = true;
         alert("You win!");
-        location.reload();
+        setInterval(() => {
+            location.reload();
+        }, 2000);
+
     }
     if (!hasWon && Timeout <= 0) {
         LooseAudio.play();
         hasWon = true;
         alert("You Loose!");
-        location.reload();
+        setInterval(() => {
+            location.reload();
+        }, 2000);
     }
     Score.textContent = scoreCount;
     Time.textContent = Timeout
     Coin.textContent = "10 / " + coin
-    if (Timeout <= 10) {
+    if (Timeout <= 10 && Timeout > 0) {
         timeout.play();
     }
 }
