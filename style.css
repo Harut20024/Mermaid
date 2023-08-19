@@ -28,13 +28,18 @@
     font-family: "Arial", sans-serif; /* Adjust the font family name */
 }
 
-#myButton{
+#myButton {
     position: absolute; 
-    top: 1220px; 
+    top: 1175px; 
     left: 1350px;
     border-radius: 70%;
-
 }
+
+#myButton.clicked #imagebutton {
+    transform: rotate(90deg); 
+    transition: transform 1s ease; 
+}
+
 #imagebutton{
 
     width: 100px;

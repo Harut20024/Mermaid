@@ -7,7 +7,7 @@ const context1 = canvas1.getContext("2d");
 const Score = document.querySelector("#Scorediv");
 
 const Coin = document.querySelector("#Coindiv");
-let coin = 1;
+let coin = 2;
 
 const images = [];
 
@@ -107,8 +107,7 @@ createGame();
 
 
 function update() {
-    score()
-    Coins()
+    scoreAndCoin()
     if (removeFiveObj()) { }
     else if (removeFourObj()) { }
     else removeTreeObj();
@@ -138,7 +137,7 @@ function render() {
 
     validObjects.forEach(obj => obj.render(context));
 
-    context.drawImage(_img1, 120, 1210, 500, 300);
+    context.drawImage(_img1, 120, 1160, 500, 300);
 
     context.drawImage(coinImg, 400, 30, 220, 60);
 
@@ -152,6 +151,7 @@ function loop() {
     }, 200);
 
     setInterval(() => {
+        checkAndAddNewRow()
         update();
         render();
     }, 60);
@@ -215,14 +215,15 @@ function onCandyClick(row, col) {
             const selectedObj = data.objects[selectedObjIndex];
             const targetObj = data.objects[targetObjIndex];
 
-            console.log("selected" + selectedObjIndex + "     " + "target" + targetObjIndex)
+            if (selectedObj.constructor === targetObj.constructor) {
+                selectedCandy = undefined
+            }
+            else if (scoreCount > 0) swapObjects(selectedObj, targetObj);
 
-            console.log("selected  " + selectedObj._color + "     " + "target  " + targetObj._color)
-
-
-            if (scoreCount > 0) swapObjects(selectedObj, targetObj);
             selectedCandy = undefined;
+
             render();
+
         } else if (selectedCandy.row === row && selectedCandy.col === col) {
             selectedCandy = undefined;
         } else {
@@ -271,22 +272,22 @@ function getRandomObjectClass() {
 function removeFiveObj() {
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 4; col++) {
-            
+
             const index1 = row * numCols + col;
             const index2 = index1 + 1;
             const index3 = index1 + 2;
             const index4 = index1 + 3;
             const index5 = index1 + 4;
-            
+
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
             const obj4 = data.objects[index4];
             const obj5 = data.objects[index5];
-            
+
             if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
-                
+
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
                     this.swapaudio = document.createElement("audio");
                     this.swapaudio.src = "sounds/five.m4a";
@@ -311,22 +312,22 @@ function removeFiveObj() {
 
     for (let col = 0; col < numCols; col++) {
         for (let row = 0; row < numRows - 4; row++) {
-            
+
             const index1 = row * numCols + col;
             const index2 = index1 + numCols;
             const index3 = index2 + numCols;
             const index4 = index3 + numCols;
             const index5 = index4 + numCols;
-            
+
             const obj1 = data.objects[index1];
             const obj2 = data.objects[index2];
             const obj3 = data.objects[index3];
             const obj4 = data.objects[index4];
             const obj5 = data.objects[index5];
-            
+
             if ((obj1 && obj2 && obj3 && obj4 && obj5) && (obj1._allowed !== false && obj2._allowed !== false && obj3._allowed !== false && obj4._allowed !== false && obj5._allowed !== false)) {
                 const areSameClass = obj1.constructor === obj2.constructor && obj1.constructor === obj3.constructor && obj1.constructor === obj4.constructor && obj1.constructor === obj5.constructor;
-                
+
                 if (areSameClass && !shouldExclude(index1) && !shouldExclude(index2) && !shouldExclude(index3) && !shouldExclude(index4) && !shouldExclude(index5)) {
                     this.swapaudio = document.createElement("audio");
                     this.swapaudio.src = "sounds/five.m4a";
@@ -603,63 +604,113 @@ function refreshBoard() {
 }
 
 function scaleCount(i) {
-    context.drawImage(images[i], 40, 150, 700, 95);
+    context.drawImage(images[i], 40, 150, 700, 75);
 
 }
 
+
 function addNewRow() {
-    const newRow = [];
-    for (let col = 0; col < numCols; col++) {
+    const firstRow = data.objects.slice(0, numCols);
+    const sistyObj = data.objects[6];
+    const eleventyObj = data.objects[11];
+    const thirtytwoObj = data.objects[32];
+    const thirtythreeyObj = data.objects[33];
+
+    for (let col = 1; col < numCols - 1; col++) {
         const x = col * rectSize;
         const y = 280;
 
-        const ObjectClass = getRandomObjectClass();
-        const newObj = new ObjectClass(x, y);
-        newRow.push(newObj);
+        if (!firstRow[col] || firstRow[col]._color === undefined) {
+            const ObjectClass = getRandomObjectClass();
+            const newObj = new ObjectClass(x, y);
+            data.objects[col] = newObj;
+        }
     }
 
-    data.objects = newRow.concat(data.objects.slice(0, -numCols));
-}
-function checkAndAddNewRow() {
-    const isEmpty = data.objects.slice(0, numCols).some(obj => !obj || obj._color === undefined);
+    if (!sistyObj || sistyObj._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(0, 400);
+        data.objects[6] = newObj;
+    }
 
-    if (isEmpty) {
+    if (!eleventyObj || eleventyObj._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(600, 400);
+        data.objects[11] = newObj;
+    }
+    if (!thirtytwoObj || thirtytwoObj._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(240, 880);
+        data.objects[32] = newObj;
+    }
+
+    if (!thirtythreeyObj || thirtythreeyObj._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(360, 880);
+        data.objects[33] = newObj;
+    }
+}
+
+
+function checkAndAddNewRow() {
+    const firstRow = data.objects.slice(0, numCols);
+    const sistyObj = data.objects[6];
+    const eleventyObj = data.objects[11];
+    const thirtytwoObj = data.objects[32];
+    const thirtythreeyObj = data.objects[33];
+
+    const isEmpty = firstRow.some(obj => !obj || obj._color === undefined);
+    const isEmpty1 = !sistyObj || sistyObj._color === undefined
+    const isEmpty2 = !eleventyObj || eleventyObj._color === undefined
+    const isEmpty3 = !thirtytwoObj || thirtytwoObj._color === undefined
+    const isEmpty4 = !thirtythreeyObj || thirtythreeyObj._color === undefined
+
+    if (isEmpty || isEmpty1 || isEmpty2 || isEmpty3 || isEmpty4) {
         setTimeout(() => {
             addNewRow();
             refreshBoard();
             render();
-        }, 2000);
+        }, 1000);
     }
 }
 
+
+
+
 let hasWon = false;
 
-function score() {
-    if (!hasWon && scale === images.length) {
+function scoreAndCoin() {
+    if (!hasWon && scale >= images.length - 1) {
         hasWon = true;
         alert("You win!");
         location.reload();
     }
     Score.textContent = scoreCount;
-}
-function Coins() {
-    Coin.textContent = "1/" + coin
+    Coin.textContent = "2/" + coin
 }
 
 
-_button.addEventListener("click", function () {
+const myButton = document.getElementById('myButton');
+
+myButton.addEventListener('click', () => {
     if (coin > 0) {
-        this.swapaudio = document.createElement("audio");
-        this.swapaudio.src = "sounds/change.m4a";
-        this.swapaudio.playbackRate = 1.4;
-        this.swapaudio.currentTime = 0;
-        this.swapaudio.play();
-        createGame();
-        render();
-        coin--
-    }
+        myButton.classList.add('clicked');
 
+        const swapaudio = document.createElement("audio");
+        swapaudio.src = "sounds/change.m4a";
+        swapaudio.playbackRate = 1.4;
+        swapaudio.currentTime = 0;
+        swapaudio.play();
+
+        setTimeout(() => {
+            myButton.classList.remove('clicked');
+            createGame();
+            render();
+            coin--;
+        }, 1000); 
+    }
 });
+
 
 
 
