@@ -53,7 +53,7 @@ cubeImg.src = "photos/back.png";
 
 
 class GameObj {
-    constructor(x, y, width, height, imgSrc, color) {
+    constructor(x, y, width, height, imgSrc, color, ice = false, iceImgSrc = "photos/ice.png") {
         this._x = x;
         this._y = y;
         this._width = width;
@@ -62,47 +62,58 @@ class GameObj {
         this._allowed = true
         this._img = new Image();
         this._img.src = imgSrc;
+        this.ice = ice;
+        this._img.onload = () => this.render(context);
+        this.ice = ice;
+        this.iceImg = new Image();
+        this.iceImg.src = iceImgSrc;
         this._img.onload = () => this.render(context);
     }
 
     render(context) {
-        if (this._color !== undefined) context.drawImage(this._img, this._x + 10, this._y + 7, this._width, this._height);
+        if (this._color !== undefined) {
+            context.drawImage(this._img, this._x + 10, this._y + 7, this._width, this._height);
+            if (this.ice) {
+                context.drawImage(this.iceImg, this._x + 10, this._y + 7, this._width, this._height);
+            }
+        }
     }
 }
 
 class Obj1 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-1.png", "orange");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-1.png", "orange", ice, "photos/ice.png");
     }
 }
 
+
 class Obj2 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-2.png", "blue");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-2.png", "blue", ice, "photos/ice.png");
     }
 }
 
 class Obj3 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-3.png", "red");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-3.png", "red", ice, "photos/ice.png");
     }
 }
 
 class Obj4 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-4.png", "yellow");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-4.png", "yellow", ice, "photos/ice.png");
     }
 }
 
 class Obj5 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-5.png", "green");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-5.png", "green", ice, "photos/ice.png");
     }
 }
 
 class Obj6 extends GameObj {
-    constructor(x, y) {
-        super(x, y, 100, 100, "photos/obj-6.png", "pink");
+    constructor(x, y, ice) {
+        super(x, y, 100, 100, "photos/obj-6.png", "pink", ice, "photos/ice.png");
     }
 }
 
@@ -146,7 +157,9 @@ function render() {
 
     const validObjects = data.objects.filter(obj => obj && obj._color !== undefined);
 
-    validObjects.forEach(obj => obj.render(context));
+    validObjects.forEach(obj => {
+        obj.render(context);
+    })
 
     context.drawImage(_img1, 120, 1180, 500, 300);
 
@@ -266,7 +279,9 @@ function onCandyClick(row, col) {
             data.objects[selectedObjIndex]._y === undefined ||
             data.objects[targetObjIndex] === undefined ||
             data.objects[targetObjIndex]._x === undefined ||
-            data.objects[targetObjIndex]._y === undefined
+            data.objects[targetObjIndex]._y === undefined ||
+            data.objects[targetObjIndex].ice === true ||
+            data.objects[selectedObjIndex].ice === true
         ) {
             selectedCandy = undefined;
             return;
@@ -359,16 +374,44 @@ function removeFiveObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 3;
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj4._color = undefined;
-                    obj5._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
-                    obj4._allowed = false;
-                    obj5._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+                    
+                    if (obj2.ice === true){
+                        obj2.ice = false
+                    } 
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+                    
+                    if (obj3.ice === true){
+                        obj3.ice = false
+                    } 
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
+                    if (obj4.ice === true){
+                        obj4.ice = false
+                    } 
+                    else {
+                        obj4._color = undefined;
+                        obj4._allowed = false;
+                    }
+                    if (obj5.ice === true){
+                        obj5.ice = false
+                    } 
+                    else {
+                        obj5._color = undefined;
+                        obj5._allowed = false;
+                    }
                 }
             }
         }
@@ -397,16 +440,44 @@ function removeFiveObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 3;
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj4._color = undefined;
-                    obj5._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
-                    obj4._allowed = false;
-                    obj5._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+                    
+                    if (obj2.ice === true){
+                        obj2.ice = false
+                    } 
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+                    
+                    if (obj3.ice === true){
+                        obj3.ice = false
+                    } 
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
+                    if (obj4.ice === true){
+                        obj4.ice = false
+                    } 
+                    else {
+                        obj4._color = undefined;
+                        obj4._allowed = false;
+                    }
+                    if (obj5.ice === true){
+                        obj5.ice = false
+                    } 
+                    else {
+                        obj5._color = undefined;
+                        obj5._allowed = false;
+                    }
                 }
             }
         }
@@ -437,14 +508,37 @@ function removeFourObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 2;
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj4._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
-                    obj4._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+
+                    if (obj2.ice === true) {
+                        obj2.ice = false
+                    }
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+
+                    if (obj3.ice === true) {
+                        obj3.ice = false
+                    }
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
+                    if (obj4.ice === true) {
+                        obj4.ice = false
+                    }
+                    else {
+                        obj4._color = undefined;
+                        obj4._allowed = false;
+                    }
                 }
             }
         }
@@ -470,14 +564,38 @@ function removeFourObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 2;
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj4._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
-                    obj4._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+
+                    if (obj2.ice === true) {
+                        obj2.ice = false
+                    }
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+
+                    if (obj3.ice === true) {
+                        obj3.ice = false
+                    }
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
+                    if (obj4.ice === true) {
+                        obj4.ice = false
+                    }
+                    else {
+                        obj4._color = undefined;
+                        obj4._allowed = false;
+                    }
+
                 }
             }
         }
@@ -504,12 +622,30 @@ function removeTreeObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 1
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+
+                    if (obj2.ice === true) {
+                        obj2.ice = false
+                    }
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+
+                    if (obj3.ice === true) {
+                        obj3.ice = false
+                    }
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
 
                 }
             }
@@ -534,12 +670,31 @@ function removeTreeObj() {
                     this.swapaudio.currentTime = 0;
                     this.swapaudio.play();
                     scale += 1
-                    obj1._color = undefined;
-                    obj2._color = undefined;
-                    obj3._color = undefined;
-                    obj1._allowed = false;
-                    obj2._allowed = false;
-                    obj3._allowed = false;
+                    if (obj1.ice === true) {
+                        obj1.ice = false
+                        console.log("aloxs")
+                    }
+                    else {
+                        obj1._color = undefined;
+                        obj1._allowed = false;
+                    }
+
+                    if (obj2.ice === true) {
+                        obj2.ice = false
+                    }
+                    else {
+                        obj2._color = undefined;
+                        obj2._allowed = false;
+                    }
+
+                    if (obj3.ice === true) {
+                        obj3.ice = false
+                    }
+                    else {
+                        obj3._color = undefined;
+                        obj3._allowed = false;
+                    }
+
                 }
             }
         }
@@ -564,6 +719,7 @@ function createGame() {
             const y = row * rectSize + 280;
 
             let shouldExclude = false;
+            let iceVal = false;
 
             // Check if the current coordinates match any exclusion coordinates
             if (
@@ -579,27 +735,51 @@ function createGame() {
                 shouldExclude = true;
             }
 
+            // Set ice property for specific coordinates
+            if (
+                (x === 120 && y === 520) ||
+                (x === 240 && y === 520) ||
+                (x === 360 && y === 520) ||
+                (x === 480 && y === 520) ||
+
+                (x === 120 && y === 640) ||
+                (x === 120 && y === 760) ||
+                (x === 120 && y === 880) ||
+
+                (x === 480 && y === 640) ||
+                (x === 480 && y === 760) ||
+                (x === 480 && y === 880) ||
+
+                (x === 240 && y === 880) ||
+                (x === 360 && y === 880)
+            ) {
+                iceVal = true; // Set ice property to true for these coordinates
+            }
+
             if (shouldExclude) {
                 objectCoords.push({ color: undefined });
             } else {
-                objectCoords.push({ x, y });
+                objectCoords.push({ x, y, ice: iceVal });
             }
         }
     }
 
-    let prevObj = undefined; // Store the previous object
-    for (const { x, y } of objectCoords) {
+    let prevObj = undefined;
+    for (const { x, y, ice } of objectCoords) {
         const ObjectClass = getRandomObjectClass();
-        const newObj = new ObjectClass(x, y);
+        const newObj = new ObjectClass(x, y, ice);
         if (prevObj && newObj._color === undefined) {
-            // Replace undefined color objects with the previous object
             data.objects.push(prevObj);
         } else {
             data.objects.push(newObj);
-            prevObj = newObj; // Update the previous object
+            prevObj = newObj;
         }
     }
 }
+
+
+
+
 
 function createIce() {
     let cubSize = 120
