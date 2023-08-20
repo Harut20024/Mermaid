@@ -125,7 +125,73 @@ const numRows = 8;
 const numCols = 6;
 const rectSize = 120;
 
-createGame();
+////////createGame
+    data.objects = [];
+    const objectCoords = [];
+
+    for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols; col++) {
+            const x = col * rectSize;
+            const y = row * rectSize + 280;
+
+            let shouldExclude = false;
+            let iceVal = false;
+
+            // Check if the current coordinates match any exclusion coordinates
+            if (
+                (x === 0 && y === 280) ||
+                (x === 600 && y === 280) ||
+                (x === 240 && y === 640) ||
+                (x === 360 && y === 640) ||
+                (x === 240 && y === 760) ||
+                (x === 360 && y === 760) ||
+                (x === 0 && y === 1120) ||
+                (x === 600 && y === 1120)
+            ) {
+                shouldExclude = true;
+            }
+
+            // Set ice property for specific coordinates
+            if (
+                (x === 120 && y === 520) ||
+                (x === 240 && y === 520) ||
+                (x === 360 && y === 520) ||
+                (x === 480 && y === 520) ||
+
+                (x === 120 && y === 640) ||
+                (x === 120 && y === 760) ||
+                (x === 120 && y === 880) ||
+
+                (x === 480 && y === 640) ||
+                (x === 480 && y === 760) ||
+                (x === 480 && y === 880) ||
+
+                (x === 240 && y === 880) ||
+                (x === 360 && y === 880)
+            ) {
+                iceVal = true; // Set ice property to true for these coordinates
+            }
+
+            if (shouldExclude) {
+                objectCoords.push({ color: undefined });
+            } else {
+                objectCoords.push({ x, y, ice: iceVal });
+            }
+        }
+    }
+/////////////////
+    let prevObj = undefined;
+    for (const { x, y, ice } of objectCoords) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(x, y, ice);
+        if (prevObj && newObj._color === undefined) {
+            data.objects.push(prevObj);
+        } else {
+            data.objects.push(newObj);
+            prevObj = newObj;
+        }
+    }
+
 
 
 function update() {
@@ -155,9 +221,9 @@ function render() {
 
     context.drawImage(_imgScore, -140, -100, 1000, 300);
 
-    const validObjects = data.objects.filter(obj => obj && obj._color !== undefined);
+    data.objects.filter(obj => obj && obj._color !== undefined);
 
-    validObjects.forEach(obj => {
+    data.objects.forEach(obj => {
         obj.render(context);
     })
 
