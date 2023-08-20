@@ -382,32 +382,32 @@ function removeFiveObj() {
                         obj1._color = undefined;
                         obj1._allowed = false;
                     }
-                    
-                    if (obj2.ice === true){
+
+                    if (obj2.ice === true) {
                         obj2.ice = false
-                    } 
+                    }
                     else {
                         obj2._color = undefined;
                         obj2._allowed = false;
                     }
-                    
-                    if (obj3.ice === true){
+
+                    if (obj3.ice === true) {
                         obj3.ice = false
-                    } 
+                    }
                     else {
                         obj3._color = undefined;
                         obj3._allowed = false;
                     }
-                    if (obj4.ice === true){
+                    if (obj4.ice === true) {
                         obj4.ice = false
-                    } 
+                    }
                     else {
                         obj4._color = undefined;
                         obj4._allowed = false;
                     }
-                    if (obj5.ice === true){
+                    if (obj5.ice === true) {
                         obj5.ice = false
-                    } 
+                    }
                     else {
                         obj5._color = undefined;
                         obj5._allowed = false;
@@ -448,32 +448,32 @@ function removeFiveObj() {
                         obj1._color = undefined;
                         obj1._allowed = false;
                     }
-                    
-                    if (obj2.ice === true){
+
+                    if (obj2.ice === true) {
                         obj2.ice = false
-                    } 
+                    }
                     else {
                         obj2._color = undefined;
                         obj2._allowed = false;
                     }
-                    
-                    if (obj3.ice === true){
+
+                    if (obj3.ice === true) {
                         obj3.ice = false
-                    } 
+                    }
                     else {
                         obj3._color = undefined;
                         obj3._allowed = false;
                     }
-                    if (obj4.ice === true){
+                    if (obj4.ice === true) {
                         obj4.ice = false
-                    } 
+                    }
                     else {
                         obj4._color = undefined;
                         obj4._allowed = false;
                     }
-                    if (obj5.ice === true){
+                    if (obj5.ice === true) {
                         obj5.ice = false
-                    } 
+                    }
                     else {
                         obj5._color = undefined;
                         obj5._allowed = false;
@@ -828,7 +828,7 @@ function refreshBoard() {
                 const previousIndex = (row - 1) * numCols + col;
                 const previousObj = data.objects[previousIndex];
 
-                if (previousObj && previousObj._color !== undefined && !excludedCoords.includes(currentCoords)) {
+                if (previousObj && previousObj._color !== undefined && !excludedCoords.includes(currentCoords) && previousObj.ice === false) {
                     // Swap properties and position
                     data.objects[currentIndex] = previousObj;
                     previousObj._y = currentObj._y;
@@ -848,10 +848,14 @@ function scaleCount(i) {
 
 function addNewRow() {
     const firstRow = data.objects.slice(0, numCols);
-    const sistyObj = data.objects[6];
-    const eleventyObj = data.objects[11];
-    const thirtytwoObj = data.objects[32];
-    const thirtythreeyObj = data.objects[33];
+    const obj6 = data.objects[6];
+    const obj11 = data.objects[11];
+    const obj32 = data.objects[32];
+    const obj33 = data.objects[33];
+    const obj37 = data.objects[37];
+    const obj38 = data.objects[38];
+    const obj39 = data.objects[39];
+    const obj40 = data.objects[40];
 
     for (let col = 1; col < numCols - 1; col++) {
         const x = col * rectSize;
@@ -862,47 +866,77 @@ function addNewRow() {
             const newObj = new ObjectClass(x, y);
             data.objects[col] = newObj;
         }
-    }
-
-    if (!sistyObj || sistyObj._color === undefined) {
+    }   
+    if (!obj6 || obj6._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(0, 400);
         data.objects[6] = newObj;
     }
 
-    if (!eleventyObj || eleventyObj._color === undefined) {
+    if (!obj11 || obj11._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(600, 400);
         data.objects[11] = newObj;
     }
-    if (!thirtytwoObj || thirtytwoObj._color === undefined) {
+    if (!obj32 || obj32._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(240, 880);
         data.objects[32] = newObj;
     }
 
-    if (!thirtythreeyObj || thirtythreeyObj._color === undefined) {
+    if (!obj33 || obj33._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(360, 880);
         data.objects[33] = newObj;
     }
+    if (!obj37 || obj37._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(120, 1000);
+        data.objects[37] = newObj;
+    }
+
+    if (!obj38 || obj38._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(240, 1000);
+        data.objects[38] = newObj;
+    }
+
+    if (!obj39 || obj39._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(360, 1000);
+        data.objects[39] = newObj;
+    }
+
+    if (!obj40 || obj40._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(480, 1000);
+        data.objects[40] = newObj;
+    }
 }
+
 
 
 function checkAndAddNewRow() {
     const firstRow = data.objects.slice(0, numCols);
-    const sistyObj = data.objects[6];
-    const eleventyObj = data.objects[11];
-    const thirtytwoObj = data.objects[32];
-    const thirtythreeyObj = data.objects[33];
+    const obj6 = data.objects[6];
+    const obj11 = data.objects[11];
+    const obj32 = data.objects[32];
+    const obj33 = data.objects[33];
+    const obj37 = data.objects[37];
+    const obj38 = data.objects[38];
+    const obj39 = data.objects[39];
+    const obj40 = data.objects[40];
 
-    const isEmpty = firstRow.some(obj => !obj || obj._color === undefined);
-    const isEmpty1 = !sistyObj || sistyObj._color === undefined
-    const isEmpty2 = !eleventyObj || eleventyObj._color === undefined
-    const isEmpty3 = !thirtytwoObj || thirtytwoObj._color === undefined
-    const isEmpty4 = !thirtythreeyObj || thirtythreeyObj._color === undefined
-
-    if (isEmpty || isEmpty1 || isEmpty2 || isEmpty3 || isEmpty4) {
+    const isEmpty = firstRow.some(obj => !obj || obj._color === undefined) ||
+        !obj6 || obj6._color === undefined ||
+        !obj11 || obj11._color === undefined ||
+        !obj32 || obj32._color === undefined ||
+        !obj33 || obj33._color === undefined ||
+        !obj37 || obj37._color === undefined ||
+        !obj38 || obj38._color === undefined ||
+        !obj39 || obj39._color === undefined ||
+        !obj40 || obj40._color === undefined 
+    if (isEmpty) {
         setTimeout(() => {
             addNewRow();
             refreshBoard();
