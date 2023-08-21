@@ -23,7 +23,7 @@ setInterval(() => {
 const images = [];
 
 // Load images
-for (let i = 1; i <= 28; i++) {
+for (let i = 1; i <= 20; i++) {
     const img = new Image();
     img.src = `photos/scale/${i}.png`;
     images.push(img);
@@ -1050,7 +1050,7 @@ function scoreAndCoin() {
     WinAudio.src = "sounds/win.ogg";
     const LooseAudio = document.createElement("audio");
     LooseAudio.src = "sounds/fail.ogg";
-    if (!hasWon && scale >= images.length - 1) {
+    if (!hasWon && scale >= images.length) {
         WinAudio.play();
         hasWon = true;
         alert("You win!");
