@@ -22,27 +22,13 @@ setInterval(() => {
 
 const images = [];
 
-for (let i = 1; i < 29; i++) {
+// Load images
+for (let i = 1; i <= 28; i++) {
     const img = new Image();
     img.src = `photos/scale/${i}.png`;
     images.push(img);
-    
-    if (i === 9 || i === 24) {
-        while (i <= 13) {
-            setInterval(() => {
-                i++
-                img.src = `photos/scale/${i}.png`;
-            }, 400);
-            
-        }
-        while (i <= 28) {
-            setInterval(() => {
-                i++
-                img.src = `photos/scale/${i}.png`;
-            }, 400);
-        }
 }
-}
+
 
 const bublefoto = new Image();
 bublefoto.src = "photos/bubble.png";
@@ -920,7 +906,6 @@ function refreshBoard() {
 
 function scaleCount(i) {
     context.drawImage(images[i], 40, 150, 700, 75);
-
 }
 
 
