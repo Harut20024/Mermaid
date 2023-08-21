@@ -576,8 +576,9 @@ function removeFourObj() {
                     this.swapaudio.play();
                     scale += 2;
                     if (obj1.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj1.ice = false
-                        console.log("aloxs")
                     }
                     else {
                         obj1._color = undefined;
@@ -585,6 +586,8 @@ function removeFourObj() {
                     }
 
                     if (obj2.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj2.ice = false
                     }
                     else {
@@ -593,6 +596,8 @@ function removeFourObj() {
                     }
 
                     if (obj3.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj3.ice = false
                     }
                     else {
@@ -600,6 +605,8 @@ function removeFourObj() {
                         obj3._allowed = false;
                     }
                     if (obj4.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj4.ice = false
                     }
                     else {
@@ -632,8 +639,9 @@ function removeFourObj() {
                     this.swapaudio.play();
                     scale += 2;
                     if (obj1.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj1.ice = false
-                        console.log("aloxs")
                     }
                     else {
                         obj1._color = undefined;
@@ -641,6 +649,8 @@ function removeFourObj() {
                     }
 
                     if (obj2.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj2.ice = false
                     }
                     else {
@@ -649,6 +659,8 @@ function removeFourObj() {
                     }
 
                     if (obj3.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj3.ice = false
                     }
                     else {
@@ -656,6 +668,8 @@ function removeFourObj() {
                         obj3._allowed = false;
                     }
                     if (obj4.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj4.ice = false
                     }
                     else {
