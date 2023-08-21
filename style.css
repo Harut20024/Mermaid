@@ -1,11 +1,3 @@
-body {
-    width: 1000px; /* Set the width to 1000 pixels */
-    max-height: 592px; /* Set a maximum height of 592 pixels (Google Pixel 4's height) */
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-    overflow-y: scroll; /* Allow vertical scrolling */
-}
-
-
 #canvas1 {
     position: absolute;
     top: 0;

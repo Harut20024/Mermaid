@@ -22,12 +22,27 @@ setInterval(() => {
 
 const images = [];
 
-for (let i = 19; i < 39; i++) {
+for (let i = 1; i < 29; i++) {
     const img = new Image();
-    img.src = `photos/scale/detalner-${i}.png`;
+    img.src = `photos/scale/${i}.png`;
     images.push(img);
+    
+    if (i === 9 || i === 24) {
+        while (i <= 13) {
+            setInterval(() => {
+                i++
+                img.src = `photos/scale/${i}.png`;
+            }, 400);
+            
+        }
+        while (i <= 28) {
+            setInterval(() => {
+                i++
+                img.src = `photos/scale/${i}.png`;
+            }, 400);
+        }
 }
-
+}
 
 const bublefoto = new Image();
 bublefoto.src = "photos/bubble.png";
@@ -126,71 +141,71 @@ const numCols = 6;
 const rectSize = 120;
 
 ////////createGame
-    data.objects = [];
-    const objectCoords = [];
+data.objects = [];
+const objectCoords = [];
 
-    for (let row = 0; row < numRows; row++) {
-        for (let col = 0; col < numCols; col++) {
-            const x = col * rectSize;
-            const y = row * rectSize + 280;
+for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+        const x = col * rectSize;
+        const y = row * rectSize + 280;
 
-            let shouldExclude = false;
-            let iceVal = false;
+        let shouldExclude = false;
+        let iceVal = false;
 
-            // Check if the current coordinates match any exclusion coordinates
-            if (
-                (x === 0 && y === 280) ||
-                (x === 600 && y === 280) ||
-                (x === 240 && y === 640) ||
-                (x === 360 && y === 640) ||
-                (x === 240 && y === 760) ||
-                (x === 360 && y === 760) ||
-                (x === 0 && y === 1120) ||
-                (x === 600 && y === 1120)
-            ) {
-                shouldExclude = true;
-            }
-
-            // Set ice property for specific coordinates
-            if (
-                (x === 120 && y === 520) ||
-                (x === 240 && y === 520) ||
-                (x === 360 && y === 520) ||
-                (x === 480 && y === 520) ||
-
-                (x === 120 && y === 640) ||
-                (x === 120 && y === 760) ||
-                (x === 120 && y === 880) ||
-
-                (x === 480 && y === 640) ||
-                (x === 480 && y === 760) ||
-                (x === 480 && y === 880) ||
-
-                (x === 240 && y === 880) ||
-                (x === 360 && y === 880)
-            ) {
-                iceVal = true; // Set ice property to true for these coordinates
-            }
-
-            if (shouldExclude) {
-                objectCoords.push({ color: undefined });
-            } else {
-                objectCoords.push({ x, y, ice: iceVal });
-            }
+        // Check if the current coordinates match any exclusion coordinates
+        if (
+            (x === 0 && y === 280) ||
+            (x === 600 && y === 280) ||
+            (x === 240 && y === 640) ||
+            (x === 360 && y === 640) ||
+            (x === 240 && y === 760) ||
+            (x === 360 && y === 760) ||
+            (x === 0 && y === 1120) ||
+            (x === 600 && y === 1120)
+        ) {
+            shouldExclude = true;
         }
-    }
-/////////////////
-    let prevObj = undefined;
-    for (const { x, y, ice } of objectCoords) {
-        const ObjectClass = getRandomObjectClass();
-        const newObj = new ObjectClass(x, y, ice);
-        if (prevObj && newObj._color === undefined) {
-            data.objects.push(prevObj);
+
+        // Set ice property for specific coordinates
+        if (
+            (x === 120 && y === 520) ||
+            (x === 240 && y === 520) ||
+            (x === 360 && y === 520) ||
+            (x === 480 && y === 520) ||
+
+            (x === 120 && y === 640) ||
+            (x === 120 && y === 760) ||
+            (x === 120 && y === 880) ||
+
+            (x === 480 && y === 640) ||
+            (x === 480 && y === 760) ||
+            (x === 480 && y === 880) ||
+
+            (x === 240 && y === 880) ||
+            (x === 360 && y === 880)
+        ) {
+            iceVal = true; // Set ice property to true for these coordinates
+        }
+
+        if (shouldExclude) {
+            objectCoords.push({ color: undefined });
         } else {
-            data.objects.push(newObj);
-            prevObj = newObj;
+            objectCoords.push({ x, y, ice: iceVal });
         }
     }
+}
+/////////////////
+let prevObj = undefined;
+for (const { x, y, ice } of objectCoords) {
+    const ObjectClass = getRandomObjectClass();
+    const newObj = new ObjectClass(x, y, ice);
+    if (prevObj && newObj._color === undefined) {
+        data.objects.push(prevObj);
+    } else {
+        data.objects.push(newObj);
+        prevObj = newObj;
+    }
+}
 
 
 
@@ -671,6 +686,8 @@ function removeFourObj() {
 function removeTreeObj() {
     this.swapaudio = document.createElement("audio");
     this.swapaudio.src = "sounds/tree.m4a";
+    this.brokenSound = document.createElement("audio");
+    this.brokenSound.src = "sounds/broke.mp3";
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols - 2; col++) {
             const index1 = row * numCols + col;
@@ -689,8 +706,9 @@ function removeTreeObj() {
                     this.swapaudio.play();
                     scale += 1
                     if (obj1.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj1.ice = false
-                        console.log("aloxs")
                     }
                     else {
                         obj1._color = undefined;
@@ -698,6 +716,8 @@ function removeTreeObj() {
                     }
 
                     if (obj2.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj2.ice = false
                     }
                     else {
@@ -706,6 +726,8 @@ function removeTreeObj() {
                     }
 
                     if (obj3.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj3.ice = false
                     }
                     else {
@@ -737,8 +759,9 @@ function removeTreeObj() {
                     this.swapaudio.play();
                     scale += 1
                     if (obj1.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj1.ice = false
-                        console.log("aloxs")
                     }
                     else {
                         obj1._color = undefined;
@@ -746,6 +769,8 @@ function removeTreeObj() {
                     }
 
                     if (obj2.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj2.ice = false
                     }
                     else {
@@ -754,6 +779,8 @@ function removeTreeObj() {
                     }
 
                     if (obj3.ice === true) {
+                        this.brokenSound.currentTime = 0;
+                        this.brokenSound.play();
                         obj3.ice = false
                     }
                     else {
@@ -776,7 +803,8 @@ function shouldExclude(index) {
 }
 
 function createGame() {
-    data.objects = [];
+    const IceObjects = data.objects.filter(obj => obj.ice === true)
+    data.objects = []
     const objectCoords = [];
 
     for (let row = 0; row < numRows; row++) {
@@ -801,26 +829,6 @@ function createGame() {
                 shouldExclude = true;
             }
 
-            // Set ice property for specific coordinates
-            if (
-                (x === 120 && y === 520) ||
-                (x === 240 && y === 520) ||
-                (x === 360 && y === 520) ||
-                (x === 480 && y === 520) ||
-
-                (x === 120 && y === 640) ||
-                (x === 120 && y === 760) ||
-                (x === 120 && y === 880) ||
-
-                (x === 480 && y === 640) ||
-                (x === 480 && y === 760) ||
-                (x === 480 && y === 880) ||
-
-                (x === 240 && y === 880) ||
-                (x === 360 && y === 880)
-            ) {
-                iceVal = true; // Set ice property to true for these coordinates
-            }
 
             if (shouldExclude) {
                 objectCoords.push({ color: undefined });
@@ -831,16 +839,20 @@ function createGame() {
     }
 
     let prevObj = undefined;
-    for (const { x, y, ice } of objectCoords) {
+    for (const { x, y } of objectCoords) {
         const ObjectClass = getRandomObjectClass();
-        const newObj = new ObjectClass(x, y, ice);
-        if (prevObj && newObj._color === undefined) {
+        const newObj = new ObjectClass(x, y);
+        const matchingIceObject = IceObjects.find(obj => obj._x === newObj._x && obj._y === newObj._y);
+        if (matchingIceObject) {
+            data.objects.push(matchingIceObject);
+        } else if (prevObj && newObj._color === undefined) {
             data.objects.push(prevObj);
         } else {
             data.objects.push(newObj);
             prevObj = newObj;
         }
     }
+
 }
 
 
@@ -916,8 +928,12 @@ function addNewRow() {
     const firstRow = data.objects.slice(0, numCols);
     const obj6 = data.objects[6];
     const obj11 = data.objects[11];
+    const obj25 = data.objects[25];
+    const obj28 = data.objects[28];
+    const obj31 = data.objects[31];
     const obj32 = data.objects[32];
     const obj33 = data.objects[33];
+    const obj34 = data.objects[34];
     const obj37 = data.objects[37];
     const obj38 = data.objects[38];
     const obj39 = data.objects[39];
@@ -932,7 +948,7 @@ function addNewRow() {
             const newObj = new ObjectClass(x, y);
             data.objects[col] = newObj;
         }
-    }   
+    }
     if (!obj6 || obj6._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(0, 400);
@@ -944,6 +960,21 @@ function addNewRow() {
         const newObj = new ObjectClass(600, 400);
         data.objects[11] = newObj;
     }
+    if (!obj25 || obj25._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(120, 760);
+        data.objects[25] = newObj;
+    }
+    if (!obj28 || obj28._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(480, 760);
+        data.objects[28] = newObj;
+    }
+    if (!obj31 || obj31._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(120, 880);
+        data.objects[31] = newObj;
+    }
     if (!obj32 || obj32._color === undefined) {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(240, 880);
@@ -954,6 +985,11 @@ function addNewRow() {
         const ObjectClass = getRandomObjectClass();
         const newObj = new ObjectClass(360, 880);
         data.objects[33] = newObj;
+    }
+    if (!obj34 || obj34._color === undefined) {
+        const ObjectClass = getRandomObjectClass();
+        const newObj = new ObjectClass(480, 880);
+        data.objects[34] = newObj;
     }
     if (!obj37 || obj37._color === undefined) {
         const ObjectClass = getRandomObjectClass();
@@ -986,8 +1022,12 @@ function checkAndAddNewRow() {
     const firstRow = data.objects.slice(0, numCols);
     const obj6 = data.objects[6];
     const obj11 = data.objects[11];
+    const obj25 = data.objects[25];
+    const obj28 = data.objects[28];
+    const obj31 = data.objects[31];
     const obj32 = data.objects[32];
     const obj33 = data.objects[33];
+    const obj34 = data.objects[34];
     const obj37 = data.objects[37];
     const obj38 = data.objects[38];
     const obj39 = data.objects[39];
@@ -996,12 +1036,16 @@ function checkAndAddNewRow() {
     const isEmpty = firstRow.some(obj => !obj || obj._color === undefined) ||
         !obj6 || obj6._color === undefined ||
         !obj11 || obj11._color === undefined ||
+        !obj25 || obj25._color === undefined ||
+        !obj28 || obj28._color === undefined ||
+        !obj31 || obj31._color === undefined ||
         !obj32 || obj32._color === undefined ||
         !obj33 || obj33._color === undefined ||
+        !obj34 || obj34._color === undefined ||
         !obj37 || obj37._color === undefined ||
         !obj38 || obj38._color === undefined ||
         !obj39 || obj39._color === undefined ||
-        !obj40 || obj40._color === undefined 
+        !obj40 || obj40._color === undefined
     if (isEmpty) {
         setTimeout(() => {
             addNewRow();
