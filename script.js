@@ -14,7 +14,7 @@ const Coin = document.querySelector("#Coindiv");
 let coin = 10;
 
 const Time = document.querySelector("#Timediv");
-let Timeout = 600;
+let Timeout = 90;
 
 setInterval(() => {
     if (Timeout > 0) Timeout--
