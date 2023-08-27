@@ -14,21 +14,25 @@ const Coin = document.querySelector("#Coindiv");
 let coin = 10;
 
 const Time = document.querySelector("#Timediv");
-let Timeout = 60;
+let Timeout = 600;
 
 setInterval(() => {
     if (Timeout > 0) Timeout--
 }, 1000);
 
 const images = [];
-
+const imagesStar = []
 // Load images
 for (let i = 1; i <= 20; i++) {
     const img = new Image();
     img.src = `photos/scale/${i}.png`;
     images.push(img);
 }
-
+for (let i = 1; i <= 5; i++) {
+    const img = new Image();
+    img.src = `photos/scale/star/${i}.png`;
+    imagesStar.push(img);
+}
 
 const bublefoto = new Image();
 bublefoto.src = "photos/bubble.png";
@@ -920,7 +924,29 @@ function refreshBoard() {
 
 function scaleCount(i) {
     context.drawImage(images[i], 40, 150, 700, 75);
+
+    if (i >= 8 && i <= 12) scaleStarCount1();
+    if (i >= 19) scaleStarCount2();
 }
+let indexofstar = 1;
+let indexofstar1 = 1;
+
+async function scaleStarCount1() {
+    if (indexofstar === 1) while (indexofstar <= 5) {
+        context.drawImage(imagesStar[indexofstar], 200, 90, 250, 220);
+        await new Promise(resolve => setTimeout(resolve, 600)); // Wait for 1000 milliseconds (1 second)
+        indexofstar++;
+    }
+}
+async function scaleStarCount2() {
+    while (indexofstar1 <= 5) {
+        context.drawImage(imagesStar[indexofstar1], 582, 90, 250, 220);
+        await new Promise(resolve => setTimeout(resolve, 600)); // Wait for 1000 milliseconds (1 second)
+        indexofstar1++;
+    }
+}
+
+
 
 
 function addNewRow() {
@@ -1064,7 +1090,7 @@ function scoreAndCoin() {
     WinAudio.src = "sounds/win.ogg";
     const LooseAudio = document.createElement("audio");
     LooseAudio.src = "sounds/fail.ogg";
-    if (!hasWon && scale >= images.length) {
+    if (!hasWon && scale >= images.length ) {
         WinAudio.play();
         hasWon = true;
         alert("You win!");
