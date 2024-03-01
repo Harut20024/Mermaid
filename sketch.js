@@ -100,7 +100,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight * 1.2);
   getAudioContext().suspend();
   startX = windowWidth - matrixWidth;
   getCandies();
@@ -230,7 +230,7 @@ function mousePressed() {
 ////////////////////////////////////////////////
 function runGame() {
   background(bgImage);
-  image(textImg, 0, 0, 650, 280);
+  image(textImg, 10, 10, 650, 280);
   image(mermaid, 0, windowHeight - 1030, 1200, 1110);
   drawIce();
   candies.forEach((candy) => {
@@ -251,7 +251,7 @@ function runGame() {
   text(`${time}`, windowWidth - 535, 27);
   text(`10/${coins}`, windowWidth - 285, 27);
   image(handlerImg, startX + 210, windowHeight - 90, 210, 140);
-  if (coin >= 8 && firstPoint) {
+  if (coin > 9 && firstPoint) {
     if (star2Played) {
       star2Sound.play();
       star2Played = false;
@@ -434,7 +434,7 @@ function gamedynamic() {
     timeSoundOff = false;
     timeSound.play();
   }
-  if (coin >= 20) {
+  if (coin > 21) {
     fill(255, 255, 255, 127);
     rect(0, 0, windowWidth, windowHeight);
     fill(0, 255, 0);
