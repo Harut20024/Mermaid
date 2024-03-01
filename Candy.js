@@ -6,6 +6,7 @@ class Candy {
     this.selected = false;
     this.hasIce = hasIce;
     this.type = this.assignType(img);
+    this.iceSize = 90;
   }
 
   assignType(img) {
@@ -33,6 +34,7 @@ class Candy {
       rect(this.x + 5, this.y, 85, 90);
     }
     image(this.img, this.x, this.y, 90, 90);
-    if (this.hasIce) image(iceCandy, this.x, this.y, 90, 90);
+    if (this.hasIce)
+      image(iceCandy, this.x, this.y, this.iceSize, this.iceSize);
   }
 }

@@ -100,7 +100,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight * 1.2);
+  createCanvas(windowWidth, windowHeight * 1.15);
   getAudioContext().suspend();
   startX = windowWidth - matrixWidth;
   getCandies();
@@ -165,9 +165,8 @@ function mousePressed() {
       } else {
         selectedCandy.selected = false;
         selectedCandy = false;
-        selectedCandy.selected = false;
       }
-    } else {
+    } else if (!clickedCandy.hasIce) {
       selectedCandy = clickedCandy;
       selectedCandy.selected = true;
     }
@@ -179,8 +178,8 @@ function mousePressed() {
   if (
     mouseX >= startX + 210 &&
     mouseX <= startX + 290 &&
-    mouseY >= windowHeight - 80 &&
-    mouseY <= windowHeight &&
+    mouseY >= windowHeight * 1.15 - 80 &&
+    mouseY <= windowHeight * 1.15 &&
     !activeTool &&
     coins >= 3
   ) {
@@ -191,8 +190,8 @@ function mousePressed() {
   } else if (
     mouseX >= startX + 275 &&
     mouseX <= startX + 355 &&
-    mouseY >= windowHeight - 90 &&
-    mouseY <= windowHeight - 10 &&
+    mouseY >= windowHeight * 1.15 - 90 &&
+    mouseY <= windowHeight * 1.15 - 10 &&
     !activeTool &&
     coins >= 1
   ) {
@@ -208,8 +207,8 @@ function mousePressed() {
   } else if (
     mouseX >= startX + 340 &&
     mouseX <= startX + 430 &&
-    mouseY >= windowHeight - 80 &&
-    mouseY <= windowHeight &&
+    mouseY >= windowHeight * 1.15 - 80 &&
+    mouseY <= windowHeight * 1.15 &&
     !activeTool &&
     coins >= 2
   ) {
@@ -231,7 +230,7 @@ function mousePressed() {
 function runGame() {
   background(bgImage);
   image(textImg, 10, 10, 650, 280);
-  image(mermaid, 0, windowHeight - 1030, 1200, 1110);
+  image(mermaid, 0, windowHeight - 870, 1200, 1110);
   drawIce();
   candies.forEach((candy) => {
     candy.display();
@@ -250,22 +249,23 @@ function runGame() {
   text(`${scoreCount}`, windowWidth - 422, 27);
   text(`${time}`, windowWidth - 535, 27);
   text(`10/${coins}`, windowWidth - 285, 27);
-  image(handlerImg, startX + 210, windowHeight - 90, 210, 140);
-  if (coin > 9 && firstPoint) {
+  image(handlerImg, startX + 200, windowHeight * 1.15 - 95, 240, 160);
+
+  if (coin >= 8 && firstPoint) {
     if (star2Played) {
       star2Sound.play();
-      star2Played = false;
     }
+    star2Played = false;
     showStar = true;
     firstPoint = false;
   }
-  if (showStar || coin >= scales.length - 1) {
+  if (showStar || coin >= scales.length) {
     let currentTimerForDisplay = millis();
     if (currentTimerForDisplay - lastStarChangeTime > 150) {
       currentStarIndex = (currentStarIndex + 1) % stars.length;
       lastStarChangeTime = currentTimerForDisplay;
     }
-    if (coin >= scales.length - 1) {
+    if (coin >= scales.length) {
       image(stars[currentStarIndex], windowWidth - 290, 0, 150, 150);
     } else {
       image(stars[currentStarIndex], windowWidth - 530, 0, 150, 150);
@@ -280,18 +280,18 @@ function runGame() {
 
     if (toolImg) {
       if (activeTool === "hammer") {
-        image(bombImg, startX + 210, windowHeight - 80, 80, 80);
-        image(retryImg, startX + 275, windowHeight - 90, 80, 80);
+        image(bombImg, startX + 210, windowHeight * 1.15 - 80, 90, 90);
+        image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
       } else if (activeTool === "bomb") {
-        image(retryImg, startX + 275, windowHeight - 90, 80, 80);
-        image(hummerImg, startX + 340, windowHeight - 80, 80, 80);
+        image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
+        image(hummerImg, startX + 340, windowHeight * 1.15 - 80, 90, 90);
       }
-      image(toolImg, mouseX + toolOffsetX, mouseY + toolOffsetY, 80, 80);
+      image(toolImg, mouseX + toolOffsetX, mouseY + toolOffsetY, 90, 90);
     }
   } else {
-    image(bombImg, startX + 210, windowHeight - 80, 80, 80);
-    image(retryImg, startX + 275, windowHeight - 90, 80, 80);
-    image(hummerImg, startX + 340, windowHeight - 80, 80, 80);
+    image(bombImg, startX + 210, windowHeight * 1.15 - 80, 90, 90);
+    image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
+    image(hummerImg, startX + 340, windowHeight * 1.15 - 80, 90, 90);
   }
 
   gamedynamic();
@@ -300,8 +300,8 @@ function runGame() {
 //////////////////////////////////////////////////////////////////////////////////
 function drawStartScreen() {
   background(bgImage);
-  fill(255, 255, 255, 120);
-  rect(0, 0, windowWidth, windowHeight);
+  fill(255, 255, 255, 190);
+  rect(0, 0, windowWidth, windowHeight * 1.17);
   fill(0);
   textSize(32);
   textAlign(CENTER, CENTER);
@@ -434,8 +434,8 @@ function gamedynamic() {
     timeSoundOff = false;
     timeSound.play();
   }
-  if (coin > 21) {
-    fill(255, 255, 255, 127);
+  if (coin >= 20) {
+    fill(255, 255, 255, 167);
     rect(0, 0, windowWidth, windowHeight);
     fill(0, 255, 0);
     textSize(48);
@@ -448,7 +448,7 @@ function gamedynamic() {
     }, 4000);
   }
   if (time <= 0) {
-    fill(255, 255, 255, 127);
+    fill(255, 255, 255, 167);
     rect(0, 0, windowWidth, windowHeight);
     fill(255, 0, 0);
     textSize(48);
