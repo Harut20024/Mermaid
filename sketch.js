@@ -460,7 +460,7 @@ function gamedynamic() {
   }
   if (coin >= 20) {
     fill(255, 255, 255, 167);
-    rect(0, 0, windowWidth, windowHeight);
+    rect(0, 0, windowWidth, windowHeight * 1.17);
     fill(0, 255, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
@@ -474,7 +474,7 @@ function gamedynamic() {
   }
   if (time <= 0) {
     fill(255, 255, 255, 167);
-    rect(0, 0, windowWidth, windowHeight);
+    rect(0, 0, windowWidth, windowHeight * 1.17);
     fill(255, 0, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
