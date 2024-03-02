@@ -40,6 +40,8 @@ let timeSoundOff = true;
 let matrixWidth = matrixSize1 * cellSize;
 let gameState = "startScreen";
 let star2Played = true;
+let rectOpacity = 200;
+let lastOpacityDecreaseTime = 0;
 let bombSound,
   winSound,
   looseSound,
@@ -108,10 +110,8 @@ function setup() {
   setInterval(() => {
     if (time > 0) {
       time--;
-    } else {
-      console.log("You Loose!");
     }
-  }, 900);
+  }, 1000);
 }
 
 function draw() {
@@ -226,8 +226,30 @@ function mousePressed() {
   }
 }
 
+function windowResized() {
+  window.location.reload();
+}
+
 ////////////////////////////////////////////////
 function runGame() {
+  let currentTime = millis();
+
+  if (gameState !== "startScreen" && rectOpacity > 0) {
+    if (currentTime - lastOpacityDecreaseTime > 30) {
+      rectOpacity -= 40;
+      lastOpacityDecreaseTime = currentTime;
+    }
+    rectOpacity = max(rectOpacity, 0);
+
+    fill(255, 255, 255, rectOpacity);
+    background(bgImage);
+    rect(0, 0, width, height);
+
+    if (rectOpacity > 0) {
+      return;
+    }
+  }
+
   background(bgImage);
   image(textImg, 10, 10, 650, 280);
   image(mermaid, 0, windowHeight - 870, 1200, 1110);
@@ -237,7 +259,7 @@ function runGame() {
   });
   updateCandies();
   image(scoreBar, windowWidth - 830, -60, 800, 140);
-  if (scales.length > 0 && coin < scales.length)
+  if (scales.length > 0 && coin < scales.length - 1)
     image(scales[coin], windowWidth - 640, 50, 450, 40);
   else image(scales[scales.length - 1], windowWidth - 640, 50, 450, 40);
 
@@ -300,7 +322,7 @@ function runGame() {
 //////////////////////////////////////////////////////////////////////////////////
 function drawStartScreen() {
   background(bgImage);
-  fill(255, 255, 255, 190);
+  fill(255, 255, 255, rectOpacity);
   rect(0, 0, windowWidth, windowHeight * 1.17);
   fill(0);
   textSize(32);
@@ -488,7 +510,11 @@ function checkMatch() {
               startY + i * cellSize
             );
             if (candy.hasIce) {
-              candy.hasIce = false;
+              candy.moveIce -= 10;
+              candy.iceSize *= 1.2;
+              setTimeout(() => {
+                candy.hasIce = false;
+              }, 300);
               brokeIceSound.play();
             } else {
               toRemove.add(candy);
@@ -504,7 +530,11 @@ function checkMatch() {
         for (let k = j; k > j - matchLength; k--) {
           let candy = getCandyAt(startX + k * cellSize, startY + i * cellSize);
           if (candy.hasIce) {
-            candy.hasIce = false;
+            candy.moveIce -= 10;
+            candy.iceSize *= 1.2;
+            setTimeout(() => {
+              candy.hasIce = false;
+            }, 300);
             brokeIceSound.play();
           } else {
             toRemove.add(candy);
@@ -539,7 +569,11 @@ function checkMatch() {
               startY + k * cellSize
             );
             if (candy.hasIce) {
-              candy.hasIce = false;
+              candy.moveIce -= 10;
+              candy.iceSize *= 1.2;
+              setTimeout(() => {
+                candy.hasIce = false;
+              }, 300);
               brokeIceSound.play();
             } else {
               toRemove.add(candy);
@@ -555,7 +589,11 @@ function checkMatch() {
         for (let k = i; k > i - matchLength; k--) {
           let candy = getCandyAt(startX + j * cellSize, startY + k * cellSize);
           if (candy.hasIce) {
-            candy.hasIce = false;
+            candy.moveIce -= 10;
+            candy.iceSize *= 1.2;
+            setTimeout(() => {
+              candy.hasIce = false;
+            }, 300);
             brokeIceSound.play();
           } else {
             toRemove.add(candy);
@@ -642,11 +680,6 @@ function moveCandyDownSmoothly() {
             startY + (targetY + 1) * cellSize
           )
         ) {
-          // clearTimeout(moveCandiesTimeout);
-
-          // moveCandiesTimeout = setTimeout(() => {
-          //   restartIntervals();
-          // }, 500);
           targetY++;
         } else {
           break;
@@ -782,7 +815,7 @@ function startBackgroundMusic() {
       });
   }
 
-  mainSound.play(1, 1, 0.2);
+  mainSound.play(1, 1, 0.11);
 
   mainSound.onended(startBackgroundMusic);
 }
