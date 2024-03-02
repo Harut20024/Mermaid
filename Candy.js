@@ -31,8 +31,8 @@ class Candy {
   }
   display() {
     if (this.selected) {
-      fill("red");
-      rect(this.x + 5, this.y, 85, 90);
+      fill(255, 30, 30);
+      rect(this.x + 5, this.y, 85, 89);
     }
     image(this.img, this.x, this.y, 90, 90);
     if (this.hasIce)
