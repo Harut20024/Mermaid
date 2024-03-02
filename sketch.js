@@ -102,7 +102,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight * 1.15);
+  createCanvas(windowWidth, windowHeight * 1.2);
   getAudioContext().suspend();
   startX = windowWidth - matrixWidth;
   getCandies();
@@ -179,8 +179,8 @@ function mousePressed() {
   if (
     mouseX >= startX + 210 &&
     mouseX <= startX + 290 &&
-    mouseY >= windowHeight * 1.15 - 80 &&
-    mouseY <= windowHeight * 1.15 &&
+    mouseY >= windowHeight * 1.2 - 80 &&
+    mouseY <= windowHeight * 1.2 &&
     !activeTool &&
     coins >= 3
   ) {
@@ -191,8 +191,8 @@ function mousePressed() {
   } else if (
     mouseX >= startX + 275 &&
     mouseX <= startX + 355 &&
-    mouseY >= windowHeight * 1.15 - 90 &&
-    mouseY <= windowHeight * 1.15 - 10 &&
+    mouseY >= windowHeight * 1.2 - 90 &&
+    mouseY <= windowHeight * 1.2 - 10 &&
     !activeTool &&
     coins >= 1
   ) {
@@ -208,8 +208,8 @@ function mousePressed() {
   } else if (
     mouseX >= startX + 340 &&
     mouseX <= startX + 430 &&
-    mouseY >= windowHeight * 1.15 - 80 &&
-    mouseY <= windowHeight * 1.15 &&
+    mouseY >= windowHeight * 1.2 - 80 &&
+    mouseY <= windowHeight * 1.2 &&
     !activeTool &&
     coins >= 2
   ) {
@@ -244,7 +244,7 @@ function runGame() {
 
     fill(255, 255, 255, rectOpacity);
     background(bgImage);
-    rect(0, 0, width, height);
+    rect(0, 0, width, windowHeight * 1.2);
 
     if (rectOpacity > 0) {
       return;
@@ -272,7 +272,7 @@ function runGame() {
   text(`${scoreCount}`, windowWidth - 422, 27);
   text(`${time}`, windowWidth - 535, 27);
   text(`10/${coins}`, windowWidth - 285, 27);
-  image(handlerImg, startX + 200, windowHeight * 1.15 - 95, 240, 160);
+  image(handlerImg, startX + 200, windowHeight * 1.2 - 95, 240, 160);
 
   if (coin >= 8 && firstPoint) {
     if (star2Played) {
@@ -303,18 +303,18 @@ function runGame() {
 
     if (toolImg) {
       if (activeTool === "hammer") {
-        image(bombImg, startX + 210, windowHeight * 1.15 - 80, 90, 90);
-        image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
+        image(bombImg, startX + 210, windowHeight * 1.2 - 80, 90, 90);
+        image(retryImg, startX + 275, windowHeight * 1.2 - 90, 90, 90);
       } else if (activeTool === "bomb") {
-        image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
-        image(hummerImg, startX + 340, windowHeight * 1.15 - 80, 90, 90);
+        image(retryImg, startX + 275, windowHeight * 1.2 - 90, 90, 90);
+        image(hummerImg, startX + 340, windowHeight * 1.2 - 80, 90, 90);
       }
       image(toolImg, mouseX + toolOffsetX, mouseY + toolOffsetY, 90, 90);
     }
   } else {
-    image(bombImg, startX + 210, windowHeight * 1.15 - 80, 90, 90);
-    image(retryImg, startX + 275, windowHeight * 1.15 - 90, 90, 90);
-    image(hummerImg, startX + 340, windowHeight * 1.15 - 80, 90, 90);
+    image(bombImg, startX + 210, windowHeight * 1.2 - 80, 90, 90);
+    image(retryImg, startX + 275, windowHeight * 1.2 - 90, 90, 90);
+    image(hummerImg, startX + 340, windowHeight * 1.2 - 80, 90, 90);
   }
 
   gamedynamic();
@@ -324,7 +324,7 @@ function runGame() {
 function drawStartScreen() {
   background(bgImage);
   fill(255, 255, 255, rectOpacity);
-  rect(0, 0, windowWidth, windowHeight * 1.17);
+  rect(0, 0, windowWidth, windowHeight * 1.2);
   fill(0);
   textSize(32);
   textAlign(CENTER, CENTER);
@@ -460,7 +460,7 @@ function gamedynamic() {
   }
   if (coin >= 20) {
     fill(255, 255, 255, 167);
-    rect(0, 0, windowWidth, windowHeight * 1.17);
+    rect(0, 0, windowWidth, windowHeight * 1.2);
     fill(0, 255, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
@@ -474,7 +474,7 @@ function gamedynamic() {
   }
   if (time <= 0) {
     fill(255, 255, 255, 167);
-    rect(0, 0, windowWidth, windowHeight * 1.17);
+    rect(0, 0, windowWidth, windowHeight * 1.2);
     fill(255, 0, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
@@ -819,7 +819,7 @@ function startBackgroundMusic() {
       });
   }
 
-  mainSound.play(1, 1, 0.11);
+  mainSound.play(1, 1, 0.05);
 
   mainSound.onended(startBackgroundMusic);
 }
