@@ -24,7 +24,7 @@ let activeTool = null;
 let startX;
 let addCandiesInterval;
 let checkMatchInterval;
-let time = 160;
+let time = 0;
 let startY = 90;
 let cellSize = 90;
 let scoreCount = 50;
@@ -40,7 +40,7 @@ let timeSoundOff = true;
 let matrixWidth = matrixSize1 * cellSize;
 let gameState = "startScreen";
 let star2Played = true;
-let rectOpacity = 200;
+let rectOpacity = 160;
 let lastOpacityDecreaseTime = 0;
 let bombSound,
   winSound,
@@ -117,6 +117,7 @@ function setup() {
 function draw() {
   if (gameState === "startScreen") {
     drawStartScreen();
+    time = 160;
   } else if (gameState === "running") {
     if (startOfGame) {
       openGameSound.play();
@@ -327,6 +328,7 @@ function drawStartScreen() {
   fill(0);
   textSize(32);
   textAlign(CENTER, CENTER);
+  textStyle(BOLD);
   text("Tap or Press Enter to Start", width / 2, height / 2);
 }
 
@@ -462,6 +464,7 @@ function gamedynamic() {
     fill(0, 255, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
+    textStyle(BOLD);
     text("You Win!", windowWidth / 2, windowHeight / 2);
     noLoop();
     winSound.play();
@@ -475,6 +478,7 @@ function gamedynamic() {
     fill(255, 0, 0);
     textSize(48);
     textAlign(CENTER, CENTER);
+    textStyle(BOLD);
     text("You Loose!", windowWidth / 2, windowHeight / 2);
     noLoop();
     looseSound.play();
